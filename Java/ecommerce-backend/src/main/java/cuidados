@@ -1,0 +1,3 @@
+arquivo:src/main/resources/application.properties linha:11 = "spring.jpa.hibernate.ddl-auto=validate"
+arquivo: com.alejandro.ecommerce.config.SecurityConfig e src/main/java/com/alejandro/ecommerce/SecurityConfig/SecurityConfig.java desativam a tela de login do local
+

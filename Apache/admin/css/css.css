@@ -1,0 +1,138 @@
+/* 1. CONFIGURAÇÕES GERAIS */
+:root {
+    --amazon-blue: #232f3e;
+    --amazon-light-blue: #37475a;
+    --amazon-orange: #febd69;
+    --bg-gray: #eaeded;
+    --white: #ffffff;
+}
+
+body {
+    margin: 0;
+    padding-top: 70px; /* Espaço para a barra fixa */
+    background-color: var(--bg-gray);
+    font-family: Arial, sans-serif;
+}
+
+/* 2. BARRA DE MENU*/
+.barra-de-menu {
+    background-color: var(--amazon-blue);
+    color: var(--white);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+/* 3. BARRA LATERAL */
+.barra-lateral {
+    background-color: var(--amazon-light-blue);
+    width: 75px;
+    height: calc(100vh - 70px);
+    position: fixed;
+    left: 0;
+    top: 70px;
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 4. ÁREA DE CONTEÚDO*/
+
+.main-content {
+    margin-left: 80px; 
+    padding: 20px;
+}
+
+/* 5. GRID DE PRODUTOS (CLIENTE) */
+.promocoes, .resultados-busca {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.produto {
+    background-color: var(--white);
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    min-height: 200px;
+}
+
+/* 6. ESTILOS DO FUNCIONÁRIO (SUB-MENUS) */
+.sub_menu {
+    color: var(--white);
+    text-decoration: none;
+    padding: 10px 15px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.sub_menu:hover {
+    color: var(--amazon-orange);
+}
+
+.botao-sair {
+    background-color: #c43b1e;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+/* 7. CLASSES DE UTILIDADE */
+.logo { transform: scale(0.8); }
+.ad { background: #ccc; height: 150px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
+
+.barra-de-menu.admin-theme {
+    background-color: #131a22; 
+    border-bottom: 2px solid var(--amazon-orange);
+}
+
+/* 8. ESTILOS PARA O PAINEL DE FORNECEDORES */
+.pesquisa-fornecedores {
+
+    margin-top: 20px;
+}
+
+.adicionar-fornecedores {
+
+    margin-top: 20px;
+}
+
+.alterar-fornecedores {
+
+    margin-top: 20px;
+}
+
+/* 9. BOTÃO "NOVO" */
+.novo {
+    display: inline-block;
+    padding: 1px 6px; /* padding aproximado do botão nativo */
+    margin: 0;
+    font: menu; /* mesma fonte e tamanho do botão do SO */
+    color: buttontext;
+    background-color: buttonface;
+    border: 2px outset buttonborder;
+    cursor: default;
+    text-decoration: none;
+    position: relative;
+    top: 10px;
+}
+.novo:hover {
+    background-color: buttonhighlight;
+}
+.novo:active {
+    border-style: inset;
+}
+
