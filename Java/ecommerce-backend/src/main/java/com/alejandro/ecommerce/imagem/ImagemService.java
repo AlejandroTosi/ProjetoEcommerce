@@ -4,7 +4,10 @@ import com.alejandro.ecommerce.produto.Produto;
 import com.alejandro.ecommerce.produto.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
+
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,10 +22,13 @@ import java.util.UUID;
         private ProdutoRepository produtoRepository;
 
         @Autowired
-        private ImagemRepository imagemRepository;
+        private com.alejandro.ecommerce.imagem.ImagemRepository imagemRepository;
 
         public void salvarImagemProduto(Long produtoId, MultipartFile file, ImagemTipo tipo) throws IOException {
-
+        long tamanhoMaximo = 2 * 1024 * 1024; //2mb
+            if(file.getSize()> tamanhoMaximo){
+                throw new MaxUploadSizeExceededException(tamanhoMaximo);
+            }
             Produto produto = produtoRepository.findById(produtoId)
                     .orElseThrow();
 
@@ -46,6 +52,8 @@ import java.util.UUID;
                 .findFirstByProdutoIdAndTipo(produtoId, ImagemTipo.PRINCIPAL)
                 .orElse(null);
     }
+
+
 }
 
 

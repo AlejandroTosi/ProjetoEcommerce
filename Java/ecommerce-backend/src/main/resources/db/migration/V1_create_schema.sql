@@ -159,3 +159,12 @@ CREATE TABLE carrinho (
     CONSTRAINT fk_carrinho_produto
         FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
+
+-- =========================
+-- home
+-- =========================
+CREATE TABLE home (
+    id INT PRIMARY KEY DEFAULT 1,
+    produtos JSON NOT NULL,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

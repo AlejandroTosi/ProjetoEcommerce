@@ -1,8 +1,7 @@
 package com.alejandro.ecommerce.imagem;
 
-import jakarta.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +26,6 @@ public class ImagemController {
                 "url", img.getEndereco()
         ));
     }
-
 
     @PostMapping("/produtos/{id}/imagem")
     public ResponseEntity<?> uploadImagem(

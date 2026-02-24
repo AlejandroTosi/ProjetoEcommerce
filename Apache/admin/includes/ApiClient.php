@@ -27,8 +27,8 @@ class ApiClient
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         // Métodos com body
-        if (in_array($method, ["POST", "PUT", "PATCH", "DELETE"]) && $data !== null) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        if (in_array($method, ["POST", "PUT", "PATCH"]) && $data !== null) {
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
         $response = curl_exec($ch);
@@ -67,6 +67,9 @@ class ApiClient
 
     public function delete(string $endpoint, $data = [])
     {
-        return $this->request("DELETE", $endpoint, $data);
+         if (is_array($data) && !empty($data)) {
+        $endpoint .= '?' . http_build_query($data);
+    }
+        return $this->request("DELETE", $endpoint);
     }
 }

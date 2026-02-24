@@ -11,6 +11,28 @@ $produtos = $res['data'] ?? [];
 usort($produtos, fn($a, $b) => ($a['posicao'] ?? 0) <=> ($b['posicao'] ?? 0));
 
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+
+    if ($action === 'adicionar') {
+        $idProduto = (int) $_POST['id'];
+
+        // Chamar API para adicionar produto
+        $api->post("/api/home", ['produtoId' => $idProduto, 'posicao' => $posicao]);
+
+    } elseif ($action === 'deletar') {
+        $posicao = (int) $_POST['posicao'];
+
+        $api->delete("/api/home/{$posicao}");
+    }
+
+    // Redireciona para evitar resubmissão
+    header("Location: home.php");
+    exit;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="PT-BR">
@@ -42,11 +64,28 @@ usort($produtos, fn($a, $b) => ($a['posicao'] ?? 0) <=> ($b['posicao'] ?? 0));
         <h3><?= htmlspecialchars($nome) ?></h3>
         <p>R$ <?= number_format($preco, 2, ",", ".") ?></p>
         
+        <!-- Botão deletar -->
+        <form method="post">
+            <input type="hidden" name="posicao" value="<?= $posicao ?>">
+            <button type="submit">Deletar</button>
+            <input type="hidden" name="action" value="deletar">
+            <input type="hidden" name="id" value="<?= $posicao ?>">
+        </form>
     </div>
 <?php endforeach; ?>
 </div>
 
-</main>
+
+<!-- Adicionar Produtos -->
+<h2>Adicionar Produto ao Home</h2>
+<form method="post" action="home.php">
+        <input type="number" name="id" placeholder="ID do Produto" required>
+        <input type="number" name="posicao" placeholder="Posição" required>
+        <button type="submit">Adicionar</button>
+        <input type="hidden" name="action" value="adicionar">
+</form>
+
+    </main>
 
     <script> 
     document.querySelectorAll('.btn-editar').forEach(btn => {

@@ -15,17 +15,19 @@ public class ProdutoController {
         this.service = service;
     }
 
+    // LISTAR TODOS
     @GetMapping
     public List<Produto> listar() {
-        return service.listarTodos();
+        return service.findAll();
     }
 
+    // BUSCAR POR ID
     @GetMapping("/{id}")
     public Produto buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
+        return service.getIdProduto(id);
     }
 
-
+    // BUSCA COM FILTROS
     @GetMapping("/buscar")
     public List<Produto> buscar(
             @RequestParam(required = false) Long fornecedorId,
@@ -33,22 +35,26 @@ public class ProdutoController {
             @RequestParam(required = false) Boolean ativo,
             @RequestParam(required = false) BigDecimal min,
             @RequestParam(required = false) BigDecimal max,
-            @RequestParam(required = false) String q // parâmetro livre do php
+            @RequestParam(required = false) String q
     ) {
         return service.buscar(fornecedorId, categoriaId, ativo, min, max, q);
     }
 
+    // BUSCAR VARIOS POR IDS (Listas)
+    @PostMapping("/by-ids")
+    public List<Produto> buscarPorIds(@RequestBody List<Long> ids) {
+        return service.findAllByIds(ids);
+    }
+
+    // CRIAR
     @PostMapping
     public Produto criar(@RequestBody Produto produto) {
         return service.salvar(produto);
     }
 
+    // ATUALIZAR
     @PutMapping
     public Produto atualizar(@RequestBody Produto produto){
         return service.atualizar(produto);
     }
-
-
-
-
 }
