@@ -18,12 +18,12 @@ public class ImagemController {
 
     @GetMapping("/produtos/{id}/imagem")
     public ResponseEntity<?> obterImagem(@PathVariable Long id) {
-        Imagem img = imagemService.buscarPrincipal(id);
+        ImagemViewers img = imagemService.buscarPrincipal(id);
         if (img == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(Map.of(
-                "url", img.getEndereco()
+                "url", img.endereco()
         ));
     }
 

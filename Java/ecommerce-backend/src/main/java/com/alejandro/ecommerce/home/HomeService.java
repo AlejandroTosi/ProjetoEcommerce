@@ -32,13 +32,13 @@ public class HomeService {
                 .map(item -> {
 
                     var p = produtoService.getIdProduto(item.getProdutoId());
-                    var img = imagemService.buscarPrincipal(p.getId());
+                    var img = imagemService.buscarPrincipal(p.id());
 
                     return new HomeViewer(
-                            p.getId(),
-                            p.getNome(),
-                            p.getValor().doubleValue(),
-                            img != null ? img.getEndereco() : null,
+                            p.id(),
+                            p.nome(),
+                            p.valor().doubleValue(),
+                            img != null ? img.endereco() : null,
                             item.getPosicao()
                     );
 
@@ -61,20 +61,20 @@ public class HomeService {
 
         //Cria e salva o item na home
         var itemHome = new Home();
-        itemHome.setProdutoId(produto.getId());
+        itemHome.setProdutoId(produto.id());
         itemHome.setPosicao(input.posicao());
         itemHome.setAtivo(true);
         homeRepo.save(itemHome);
 
         //Busca imagem principal
-        var img = imagemService.buscarPrincipal(produto.getId());
+        var img = imagemService.buscarPrincipal(produto.id());
 
         //Retorna HomeViewer
         return new HomeViewer(
-                produto.getId(),
-                produto.getNome(),
-                produto.getValor().doubleValue(),
-                img != null ? img.getEndereco() : null,
+                produto.id(),
+                produto.nome(),
+                produto.valor().doubleValue(),
+                img != null ? img.endereco() : null,
                 input.posicao()
         );
     }

@@ -47,10 +47,19 @@ import java.util.UUID;
         }
 
 
-    public Imagem buscarPrincipal(Long produtoId) {
+    public ImagemViewers buscarPrincipal(Long produtoId) {
         return imagemRepository
                 .findFirstByProdutoIdAndTipo(produtoId, ImagemTipo.PRINCIPAL)
+                .map(this::toViewer)
                 .orElse(null);
+    }
+
+
+    private ImagemViewers toViewer(Imagem imagem) {
+        return new ImagemViewers(
+                imagem.getEndereco(),
+                imagem.getTipo().name() // transforma enum em String
+        );
     }
 
 

@@ -1,37 +1,107 @@
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #eee;
-}
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  padding: 30px;
-  border: 1px solid black;
-  background-color: #be4630;
-}
-.toggle-buttons{
-  flex-direction: row;
-  
-}
-.login-form{
-  display:block
-}
-.register-form{
-  display:none
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1e1e2f, #2b2b45);
 }
 
-.container.toggle  .login-form{
-  display: none;
+.container {
+    width: 100%;
+    max-width: 420px;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
-.container.toggle  .register-form{
-  display: block;
+
+/* Toggle */
+.toggle-buttons {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.toggle-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    background: #f2f2f2;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.toggle-buttons button:hover {
+    background: #d85c45;
+    color: white;
+}
+
+.toggle-buttons button.active {
+    background: #be4630;
+    color: white;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+h2 {
+    margin: 0;
+    text-align: center;
+    color: #333;
+}
+
+input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: 0.2s;
+}
+
+input:focus {
+    border-color: #be4630;
+    outline: none;
+}
+
+/* Botão principal */
+.btn-primary {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #be4630;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #a73b27;
+}
+
+/* Toggle funcionamento */
+.register-form {
+    display: none;
+}
+
+.container.toggle .login-form {
+    display: none;
+}
+
+.container.toggle .register-form {
+    display: block;
 }

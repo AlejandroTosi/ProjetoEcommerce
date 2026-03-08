@@ -1,7 +1,9 @@
 <div class="barra-de-menu admin-theme">
-    <div class="logo-admin"><a href="index.php">📦 Loja</a></div>
+    <div class="logo-admin">
+        <a href="/user/index.php">📦 Loja</a>
+    </div>
 
-    <form class="pesquisa" action="buscar.php" method="get">
+    <form class="pesquisa" action="/user/buscar.php" method="get">
         <select name="categoria" class="categoria-pesquisa">
             <option value="">Todos</option>
             <option value="1">Categoria 1</option>
@@ -14,11 +16,15 @@
 
     <div class="usuario-admin">
         <?php if (isset($_SESSION['user'])): ?>
-            Olá, <?= $_SESSION['user'] ?>
-            <a href="perfil.php">Perfil</a>
+            Olá, <?= htmlspecialchars($_SESSION['user']['nome']) ?>
+            <a href="/user/perfil/perfil.php">Perfil</a>
+            <form action="/user/includes/logout.php" method="post" style="display:inline;">
+                <button type="submit">Sair</button>
+            </form>
         <?php else: ?>
-            <a href="login.php">Entrar / Cadastrar</a>
+            <a href="/user/login/login.php">Entrar / Cadastrar</a>
         <?php endif; ?>
+
         <a href="carrinho.php" class="sub_menu">🛒 Carrinho</a>
     </div>
 </div>

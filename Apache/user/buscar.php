@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // ======================================================
 // Captura os parâmetros enviados via GET

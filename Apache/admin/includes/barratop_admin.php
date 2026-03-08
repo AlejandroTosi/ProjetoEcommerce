@@ -10,6 +10,8 @@
     </nav>
 
     <div class="usuario-admin">
-        <a href="/admin/sair.php" class="botao-sair">Sair</a>
+        <form action="/admin/includes/logout.php" method="post" style="display:inline;">
+    <button type="submit">Sair</button>
+</form>
     </div>
 </div>

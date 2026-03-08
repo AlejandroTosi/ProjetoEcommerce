@@ -1,8 +1,13 @@
 <?php
-include_once "../user/includes/ApiClient.php";
+include_once "includes/session.php";
+include_once "includes/ApiClient.php";
 
 $api = new ApiClient();
 $res = $api->get("/api/home");
+$viewproduto = "http://localhost/user/views/produto.php?id=";
+
+
+
 
 // Já é array de produtos
 $produtos = $res['data'] ?? [];
@@ -36,13 +41,16 @@ usort($produtos, fn($a, $b) => ($a['posicao'] ?? 0) <=> ($b['posicao'] ?? 0));
         $preco = $p['preco'] ?? 0;
         $imagem = !empty($p['imagem']) ? "http://localhost:8080" . $p['imagem'] : "../imagens/default.png";
         $posicao = $p['posicao'] ?? 0;
+        $produto_endereco = $viewproduto . ($p['id'] ?? '');
     ?>
-    <div class="produto" data-posicao="<?= $posicao ?>">
-        <img src="<?= htmlspecialchars($imagem) ?>" alt="<?= htmlspecialchars($nome) ?>">
-        <h3><?= htmlspecialchars($nome) ?></h3>
-        <p>R$ <?= number_format($preco, 2, ",", ".") ?></p>
+        <a href="<?= htmlspecialchars($produto_endereco) ?>" class="produto-link">
+            <div class="produto" data-posicao="<?= $posicao ?>">
+            <img src="<?= htmlspecialchars($imagem) ?>" alt="<?= htmlspecialchars($nome) ?>">
+            <h3><?= htmlspecialchars($nome) ?></h3>
+            <p>R$ <?= number_format($preco, 2, ",", ".") ?></p>
         
-    </div>
+        </div>
+        </a>
 <?php endforeach; ?>
 </div>
 

@@ -73,9 +73,11 @@ public class ProdutoService {
     }
 
     // BUSCAR POR ID
-    public Produto getIdProduto(Long id) {
-        return repository.findById(id)
+    public ProdutoViewer getIdProduto(Long id) {
+                Produto produto= repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+                return toViewer(produto);
     }
 
     // ATUALIZAR
@@ -125,5 +127,30 @@ public class ProdutoService {
         }
 
         return repository.save(produto);
+    }
+
+    private ProdutoViewer toViewer(Produto produto) {
+
+        List<String> imagens = produto.getImagens()
+                .stream()
+                .map(img -> img.getEndereco())
+                .toList();
+
+        String descricao = produto.getDescricao() != null
+                ? produto.getDescricao().getTexto()
+                : null;
+
+        String categoria = produto.getCategoria() != null
+                ? produto.getCategoria().getTipo()
+                : null;
+
+        return new ProdutoViewer(
+                produto.getId(),
+                produto.getNome(),
+                produto.getValor(),
+                descricao,
+                imagens,
+                categoria
+        );
     }
 }

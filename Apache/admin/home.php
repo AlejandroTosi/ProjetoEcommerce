@@ -1,4 +1,6 @@
 <?php
+require_once "includes/auth.php";
+
 include_once "../user/includes/ApiClient.php";
 
 $api = new ApiClient();
