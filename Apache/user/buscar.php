@@ -1,102 +1,103 @@
 <?php
+include_once "includes/session.php";
+include_once "includes/ApiClient.php";
 
+$api = new ApiClient();
+$erroBackend = false;
 
-// ======================================================
-// Captura os parâmetros enviados via GET
-// ======================================================
-$categoriaId = $_GET['categoria'] ?? null;  // ID da categoria selecionada (opcional)
-$busca = $_GET['q'] ?? null;               // Termo de busca (opcional)
+$categoriaId = $_GET['categoria'] ?? null;
+$busca = trim($_GET['q'] ?? '');
 
-// ======================================================
-// Prepara os parâmetros para consulta no backend Java
-// ======================================================
 $params = [];
 
-// Adiciona categoria apenas se houver valor numérico válido
-if (isset($categoriaId) && $categoriaId !== "") {
+if (!empty($categoriaId)) {
     $params['categoriaId'] = $categoriaId;
 }
 
-// Adiciona termo de busca apenas se houver conteúdo não vazio
-if (isset($busca) && trim($busca) !== "") {
+if ($busca !== '') {
     $params['q'] = $busca;
 }
 
-// ======================================================
-// Monta a URL completa da API, incluindo query string
-// ======================================================
-$url = "http://localhost:8080/api/produtos/buscar";
-if (!empty($params)) {
-    $url .= '?' . http_build_query($params);
+$query = $params ? "?" . http_build_query($params) : "";
+
+try {
+    $res = $api->get("/api/produtos/buscar" . $query);
+} catch (Exception $e) {
+    error_log("Erro ao buscar produtos: " . $e->getMessage());
+    $produtos = [];
+    $erroBackend = true;
 }
 
-// ======================================================
-// Configuração do contexto HTTP
-// - ignore_errors: permite capturar respostas mesmo com códigos de erro HTTP
-// ======================================================
-$options = [
-    "http" => [
-        "method" => "GET",
-        "ignore_errors" => true
-    ]
-];
-$context = stream_context_create($options);
-
-// ======================================================
-// Executa a requisição HTTP para o backend
-// ======================================================
-$response = @file_get_contents($url, false, $context);
-
-// ======================================================
-// Depuração: exibe a URL final e status HTTP retornado pelo backend
-// ======================================================
-if (isset($http_response_header)) {
-    echo "<p>URL final: " . htmlspecialchars($url) . "</p>";
-    echo "<p>Status HTTP: " . $http_response_header[0] . "</p>";
-}
-
-// ======================================================
-// Valida se a requisição foi bem-sucedida
-// ======================================================
-if ($response === false) {
-    die("<p>Erro ao conectar com o backend Java. Verifique se o serviço está ativo e se a URL está correta.</p>");
-}
-
-// ======================================================
-// Decodifica a resposta JSON do backend
-// ======================================================
-$produtos = json_decode($response, true);
-if ($produtos === null) {
-    die("<p>Erro ao decodificar resposta JSON do backend. Verifique o formato retornado.</p>");
-}
+$viewproduto = "http://localhost/user/views/produto.php?id=";
+$produtos = $res['data'] ?? [];
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Resultados da busca</title>
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/menus.css">
+    <link rel="stylesheet" href="../user/css/css.css">
 </head>
+
 <body>
-    <?php include 'includes/barratop.php'; ?>
-    <?php include 'includes/barralateral.php'; ?>
+
+    <?php include '../user/includes/barratop.php'; ?>
+    <?php include '../user/includes/barralateral.php'; ?>
 
     <main class="main-content">
+
+        <?php if ($erroBackend): ?>
+            <?php include '../user/includes/backend_error.php'; ?>
+        <?php endif; ?>
+
         <h2>Resultados da busca</h2>
 
-        <div class="resultados-busca">
-        <?php if (empty($produtos)): ?>
-            <p>Nenhum produto encontrado.</p>
-        <?php else: ?>
-            <?php foreach ($produtos as $p): ?>
-                <div class="produto">
-                    <h3><?= htmlspecialchars($p['nome']) ?></h3>
-                    <p>R$ <?= number_format($p['valor'], 2, ',', '.') ?></p>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+        <div class="promocoes">
+
+            <?php if (empty($produtos)): ?>
+
+                <p>Nenhum produto encontrado.</p>
+
+            <?php else: ?>
+
+                <?php foreach ($produtos as $p): ?>
+
+                    <?php
+                    $nome = $p['nome'] ?? 'Produto sem nome';
+                    $preco = $p['preco'] ?? 0;
+
+                    $imagem = !empty($p['imagens'][0]['endereco'])
+                        ? "http://localhost:8080" . $p['imagens'][0]['endereco']
+                        : "../imagens/default.png";
+
+                    $produto_endereco = $viewproduto . ($p['id'] ?? '');
+                    ?>
+
+                    <a href="<?= htmlspecialchars($produto_endereco) ?>" class="produto-link">
+                        <div class="produto">
+
+                            <img 
+                                src="<?= htmlspecialchars($imagem) ?>" 
+                                alt="<?= htmlspecialchars($nome) ?>"
+                            >
+
+                            <h3><?= htmlspecialchars($nome) ?></h3>
+
+                            <p>R$ <?= number_format($preco, 2, ",", ".") ?></p>
+
+                        </div>
+                    </a>
+
+                <?php endforeach; ?>
+
+            <?php endif; ?>
+
         </div>
+
     </main>
+
 </body>
+
 </html>

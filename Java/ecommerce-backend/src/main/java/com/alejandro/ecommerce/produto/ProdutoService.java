@@ -55,7 +55,7 @@ public class ProdutoService {
     }
 
     // BUSCA COM FILTROS
-    public List<Produto> buscar(
+    public List<ProdutoViewer> buscar(
             Long fornecedorId,
             Long categoriaId,
             Boolean ativo,
@@ -67,9 +67,13 @@ public class ProdutoService {
             q = null;
         }
 
-        return repository.buscarComFiltros(
+        List<Produto> produtos = repository.buscarComFiltros(
                 fornecedorId, categoriaId, ativo, min, max, q
         );
+
+        return produtos.stream()
+                .map(this::toViewer)
+                .toList();
     }
 
     // BUSCAR POR ID
@@ -128,7 +132,7 @@ public class ProdutoService {
 
         return repository.save(produto);
     }
-
+// MAPPER
     private ProdutoViewer toViewer(Produto produto) {
 
         List<String> imagens = produto.getImagens()
@@ -151,6 +155,19 @@ public class ProdutoService {
                 descricao,
                 imagens,
                 categoria
+        );
+    }
+
+    private ProdutoBuscarViewer toBuscarViewer(Produto produto) {
+        String imagem = produto.getImagens().isEmpty()
+                ? null
+                : produto.getImagens().get(0).getEndereco();
+
+        return new ProdutoBuscarViewer(
+                produto.getId(),
+                produto.getNome(),
+                imagem,
+                produto.getValor().doubleValue()
         );
     }
 }

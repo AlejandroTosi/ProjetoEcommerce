@@ -29,7 +29,7 @@ public class ProdutoController {
 
     // BUSCA COM FILTROS
     @GetMapping("/buscar")
-    public List<Produto> buscar(
+    public List<ProdutoViewer> buscar(
             @RequestParam(required = false) Long fornecedorId,
             @RequestParam(required = false) Long categoriaId,
             @RequestParam(required = false) Boolean ativo,
