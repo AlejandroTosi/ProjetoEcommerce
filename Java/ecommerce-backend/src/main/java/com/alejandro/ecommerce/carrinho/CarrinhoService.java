@@ -2,6 +2,7 @@ package com.alejandro.ecommerce.carrinho;
 
 import com.alejandro.ecommerce.pedido.Pedido;
 import com.alejandro.ecommerce.pedido.PedidoService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class CarrinhoService {
         return carrinhoRepository.save(carrinho);
     }
 
-    public Pedido finalizar(Long usuarioId, PedidoService pedidoService) {
+    public Carrinho finalizar(Long usuarioId, PedidoService pedidoService) {
         List<Carrinho> itens = carrinhoRepository.findByUsuarioId(usuarioId);
 
         // cria o pedido com valor total
@@ -33,5 +34,15 @@ public class CarrinhoService {
         carrinhoRepository.deleteAll(itens);
 
         return pedido;
+    }
+
+    @Transactional
+    public Carrinho remover(Long id, Long usuarioId) {
+        int deletados = carrinhoRepository.deleteByIdAndUsuarioId(id, usuarioId);
+        if (deletados == 0) {
+            throw new RuntimeException("Item não encontrado ou não pertence ao usuário");
+        }
+
+        carrinhoRepository.deleteById(id);
     }
 }

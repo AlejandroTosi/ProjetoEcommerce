@@ -2,6 +2,7 @@ package com.alejandro.ecommerce.carrinho;
 
 import com.alejandro.ecommerce.pedido.Pedido;
 import com.alejandro.ecommerce.pedido.PedidoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -29,7 +30,13 @@ public class CarrinhoController {
     }
 
     @PostMapping("/finalizar")
-    public Pedido finalizar(@RequestParam Long usuarioId) {
+    public Carrinho finalizar(@RequestParam Long usuarioId) {
         return carrinhoService.finalizar(usuarioId, pedidoService);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        Long usuarioId = getUsuarioLogadoId();
+        carrinhoService.remover(id, usuarioId);
+        return ResponseEntity.noContent().build();
     }
 }
