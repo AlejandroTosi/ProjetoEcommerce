@@ -2,15 +2,19 @@
 include_once "includes/session.php";
 include_once "includes/ApiClient.php";
 
-$api = new ApiClient();
-$res = $api->get("/api/home");
+
+// Try catch que permite renderizar a home mesmo que o backend esteja com problemas
+try {
+    $api = new ApiClient("http://localhost:8080");
+    $res = $api->get("/api/home");
+} catch (Exception $e) {
+    error_log("Erro ao buscar produtos para a home: " . $e->getMessage());
+    $res = ['data' => []];
+    $erroBackend = true;
+}
+$produtos = $res['data'] ?? [];
 $viewproduto = "http://localhost/user/views/produto.php?id=";
 
-
-
-
-// Já é array de produtos
-$produtos = $res['data'] ?? [];
 
 // Ordena por posição, evita warnings se faltar a chave 'posicao'
 usort($produtos, fn($a, $b) => ($a['posicao'] ?? 0) <=> ($b['posicao'] ?? 0));
@@ -27,11 +31,15 @@ usort($produtos, fn($a, $b) => ($a['posicao'] ?? 0) <=> ($b['posicao'] ?? 0));
 </head>
 
 <body>
-    
+ 
     <?php include '../user/includes/barratop.php'; ?>
     <?php include '../user/includes/barralateral.php'; ?>
 
     <main class="main-content">
+
+    <?php include '../user/includes/backend_error.php'; ?>
+
+
         <div class="ad">Banner de Anúncio aqui</div>
 
 <div class="promocoes">
