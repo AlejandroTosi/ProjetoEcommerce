@@ -1,0 +1,30 @@
+<?php
+require_once "auth.php";
+require_once "ApiClient.php";
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["erro" => "Método inválido"]);
+    exit;
+}
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+$produtoId = $data['produto_id'] ?? null;
+
+if (!$produtoId) {
+    http_response_code(400);
+    echo json_encode(["erro" => "Produto inválido"]);
+    exit;
+}
+
+$api = new ApiClient("http://localhost:8080");
+
+$response = $api->post("/api/carrinho/adicionar", [
+    "produtoId" => $produtoId,
+    "usuarioId" => $_SESSION['usuario_id']
+]);
+
+echo json_encode([
+    "status" => $response['status']
+]);
