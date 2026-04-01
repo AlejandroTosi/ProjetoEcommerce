@@ -84,4 +84,7 @@ public class Usuario {
     public void setTipoDeConta(TipoDeConta tipoDeConta) {
         this.tipoDeConta = tipoDeConta;
     }
-}
+
+    public void setId(Long id) {
+        this.id = id;
+    }}
