@@ -4,6 +4,7 @@ include_once "includes/ApiClient.php";
 
 
 // Try catch que permite renderizar a home mesmo que o backend esteja com problemas
+$erroBackend = false;
 try {
     $api = new ApiClient("http://localhost:8080");
     $res = $api->get("/api/home");
