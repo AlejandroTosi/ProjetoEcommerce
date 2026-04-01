@@ -9,7 +9,7 @@ try {
     $api = new ApiClient("http://localhost:8080");
     $res = $api->get("/api/carrinho");
 } catch (Exception $e) {
-    error_log("Erro ao buscar produtos para a home: " . $e->getMessage());
+    error_log("Erro ao buscar items do carrinho: " . $e->getMessage());
     $res = ['data' => []];
     $erroBackend = true;
 }
@@ -40,7 +40,7 @@ $produtos = $res['data'] ?? [];
 
 <h2>🛒 Meu Carrinho</h2>
 
-<?php if (empty($carrinho)): ?>
+<?php if (empty($produtos)): ?>
     <div class="produto">
         <p>Seu carrinho está vazio.</p>
     </div>
@@ -54,7 +54,7 @@ $produtos = $res['data'] ?? [];
 
         <?php 
         $total = 0;
-        foreach($carrinho as $item): 
+        foreach($produtos as $item): 
             $nome = $item['nome'];
             $preco = $item['preco'];
             $qtd = $item['quantidade'];

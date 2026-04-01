@@ -76,33 +76,34 @@ $p = $res['data'] ?? null; /*p = produto*/
         }
 
         document.getElementById('btn-carrinho').addEventListener('click', async function() {
-    
-    const produtoId = this.dataset.id;
 
-    try {
-        const response = await fetch('adicionar_carrinho.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                produto_id: produtoId
-            })
+            const produtoId = this.dataset.id;
+
+            try {
+                const response = await fetch('/user/includes/adicionar_carrinho.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        produto_id: produtoId
+                    }),
+                    credentials: 'same-origin'
+                });
+
+                const data = await response.json();
+
+                if (data.status === 200) {
+                    alert("Produto adicionado ao carrinho 🛒");
+                } else {
+                    alert("Erro ao adicionar produto.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Erro de conexão.");
+            }
         });
-
-        const data = await response.json();
-
-        if (data.status === 200) {
-            alert("Produto adicionado ao carrinho 🛒");
-        } else {
-            alert("Erro ao adicionar produto.");
-        }
-
-    } catch (error) {
-        console.error(error);
-        alert("Erro de conexão.");
-    }
-});
     </script>
 </body>
 

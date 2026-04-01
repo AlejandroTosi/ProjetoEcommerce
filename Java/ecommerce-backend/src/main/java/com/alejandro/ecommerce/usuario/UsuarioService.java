@@ -11,13 +11,16 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final TipoDeContaRepository tipoDeContaRepository;
+    private final TokenService tokenService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           TipoDeContaRepository tipoDeContaRepository,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          TokenService tokenService) {
         this.usuarioRepository = usuarioRepository;
         this.tipoDeContaRepository = tipoDeContaRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
     }
 
     // =========================
@@ -33,11 +36,11 @@ public class UsuarioService {
             throw new RuntimeException("Usuário ou senha inválidos");
         }
 
-        // Adicionar JWT
-        String tokenFake = "token-gerado-aqui";
+        // Gerar JWT
+        String token = tokenService.gerarToken(usuario);
 
         return new UsuarioDTO.LoginResponse(
-                tokenFake,
+                token,
                 usuario.getId(),
                 usuario.getNome()
         );

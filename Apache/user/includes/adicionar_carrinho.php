@@ -1,6 +1,7 @@
 <?php
 require_once "auth.php";
 require_once "ApiClient.php";
+require_once "session.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -20,7 +21,7 @@ if (!$produtoId) {
 
 $api = new ApiClient("http://localhost:8080");
 
-$response = $api->post("/api/carrinho/adicionar", [
+$response = $api->post("/api/carrinho/itens", [
     "produtoId" => $produtoId,
     "usuarioId" => $_SESSION['usuario_id']
 ]);
