@@ -18,9 +18,9 @@ public class UsuarioLogadoService {
                 .getContext()
                 .getAuthentication();
 
-        String email = auth.getName();
+        String username = auth.getName();
 
-        Usuario usuario = usuarioRepository.findByEmail(email)
+        Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         return usuario.getId();
