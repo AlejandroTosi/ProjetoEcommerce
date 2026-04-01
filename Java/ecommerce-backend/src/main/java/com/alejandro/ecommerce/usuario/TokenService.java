@@ -11,7 +11,7 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    @Value("${jwt.secret:sua-chave-super-secreta-cambiar-em-producao}")
+    @Value("${jwt.secret:bXlTZWNyZXRLZXkxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=}")
     private String jwtSecret;
 
     @Value("${jwt.expiration:86400000}")
