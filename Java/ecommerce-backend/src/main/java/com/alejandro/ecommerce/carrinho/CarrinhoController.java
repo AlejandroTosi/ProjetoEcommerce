@@ -2,6 +2,7 @@ package com.alejandro.ecommerce.carrinho;
 
 import com.alejandro.ecommerce.pedido.Pedido;
 import com.alejandro.ecommerce.pedido.PedidoService;
+import com.alejandro.ecommerce.usuario.UsuarioLogadoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,32 +12,40 @@ import java.util.List;
 public class CarrinhoController {
 
     private final CarrinhoService carrinhoService;
-    private final PedidoService pedidoService;
+    private final UsuarioLogadoService usuarioLogadoService;
 
-
-    public CarrinhoController(CarrinhoService carrinhoService, PedidoService pedidoService) {
+    public CarrinhoController(CarrinhoService carrinhoService,
+                              UsuarioLogadoService usuarioLogadoService) {
         this.carrinhoService = carrinhoService;
-        this.pedidoService = pedidoService;
+        this.usuarioLogadoService = usuarioLogadoService;
     }
 
+    // pegar carrinho do usuário
     @GetMapping
     public List<Carrinho> listar() {
-        return carrinhoService.listarTodos();
+        Long usuarioId = usuarioLogadoService.getId();
+        return carrinhoService.listarPorUsuario(usuarioId);
     }
 
-    @PostMapping("/alterar")
-    public Carrinho alterar(@RequestBody Carrinho carrinho) {
-        return carrinhoService.alterar(carrinho);
+    // adicionar item
+    @PostMapping("/itens")
+    public Carrinho adicionar(@RequestBody Carrinho req) {
+        Long usuarioId = usuarioLogadoService.getId();
+        return carrinhoService.adicionar(req, usuarioId);
     }
 
-    @PostMapping("/finalizar")
-    public Carrinho finalizar(@RequestParam Long usuarioId) {
-        return carrinhoService.finalizar(usuarioId, pedidoService);
-    }
+    // remover item
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
-        Long usuarioId = getUsuarioLogadoId();
+        Long usuarioId = usuarioLogadoService.getId();
         carrinhoService.remover(id, usuarioId);
         return ResponseEntity.noContent().build();
+    }
+
+    // checkout
+    @PostMapping("/checkout")
+    public Pedido checkout() {
+        Long usuarioId = usuarioLogadoService.getId();
+        return carrinhoService.checkout(usuarioId);
     }
 }
