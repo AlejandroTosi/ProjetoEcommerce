@@ -25,6 +25,6 @@
             <a href="/user/login/login.php">Entrar / Cadastrar</a>
         <?php endif; ?>
 
-        <a href="carrinho.php" class="sub_menu">🛒 Carrinho</a>
+        <a href="/user/carrinho.php" class="sub_menu">🛒 Carrinho</a>
     </div>
 </div>
