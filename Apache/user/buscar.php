@@ -30,6 +30,7 @@ try {
 
 $viewproduto = "http://localhost/user/views/produto.php?id=";
 $produtos = $res['data'] ?? [];
+$va
 ?>
 
 <!DOCTYPE html>

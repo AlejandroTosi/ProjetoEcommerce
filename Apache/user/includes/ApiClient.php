@@ -9,7 +9,7 @@ class ApiClient
         $this->baseUrl = rtrim($baseUrl, '/');
     }
 
-    private function request(string $method, string $endpoint, $data = null)
+    private function request(string $method, string $endpoint, $data = null, array $extraHeaders = [])
     {
         $url = $this->baseUrl . $endpoint;
 
@@ -21,6 +21,9 @@ class ApiClient
         $ch = curl_init($url);
 
         $headers = ["Content-Type: application/json"];
+        foreach ($extraHeaders as $key => $value) {
+        $headers[] = "$key: $value";
+}
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -55,11 +58,10 @@ class ApiClient
         return $this->request("GET", $endpoint, $params);
     }
 
-    public function post(string $endpoint, $data = [])
-    {
-        return $this->request("POST", $endpoint, $data);
-    }
-
+    public function post(string $endpoint, $data = [], array $extraHeaders = [])
+{
+    return $this->request("POST", $endpoint, $data, $extraHeaders);
+}
     public function put(string $endpoint, $data = [])
     {
         return $this->request("PUT", $endpoint, $data);

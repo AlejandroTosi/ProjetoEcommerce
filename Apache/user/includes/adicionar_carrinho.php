@@ -1,4 +1,11 @@
 <?php
+session_start();
+header('Content-Type: application/json');
+
+
+$usuarioId = $_SESSION['user']['id'] ?? null;
+$token     = $_SESSION['user']['token'] ?? null;
+
 require_once "auth.php";
 require_once "ApiClient.php";
 require_once "session.php";
@@ -21,10 +28,11 @@ if (!$produtoId) {
 
 $api = new ApiClient("http://localhost:8080");
 
-$response = $api->post("/api/carrinho/itens", [
-    "produtoId" => $produtoId,
-    "usuarioId" => $_SESSION['usuario_id']
-]);
+$response = $api->post(
+    "/api/carrinho/itens",
+    ["produtoId" => $produtoId, "usuarioId" => $usuarioId],
+    ["Authorization" => "Bearer $token"]
+);
 
 echo json_encode([
     "status" => $response['status']

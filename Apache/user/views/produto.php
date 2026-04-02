@@ -70,6 +70,7 @@ $p = $res['data'] ?? null; /*p = produto*/
             <p><?= nl2br(htmlspecialchars($p['descricao'] ?? 'Sem descrição disponível.')) ?></p>
     </main>
 
+    <script src="../js/getCookie.js"></script>
     <script>
         function trocarImagem(src) {
             document.getElementById('imagem-principal').src = src;
@@ -78,7 +79,7 @@ $p = $res['data'] ?? null; /*p = produto*/
         document.getElementById('btn-carrinho').addEventListener('click', async function() {
 
             const produtoId = this.dataset.id;
-
+            const token = getCookie("jwt");
             try {
                 const response = await fetch('/user/includes/adicionar_carrinho.php', {
                     method: 'POST',
@@ -86,7 +87,8 @@ $p = $res['data'] ?? null; /*p = produto*/
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        produto_id: produtoId
+                        produto_id: produtoId,
+                        token: token
                     }),
                     credentials: 'same-origin'
                 });
