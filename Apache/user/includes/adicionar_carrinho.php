@@ -8,7 +8,6 @@ $token     = $_SESSION['user']['token'] ?? null;
 
 require_once "auth.php";
 require_once "ApiClient.php";
-require_once "session.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -30,10 +29,14 @@ $api = new ApiClient("http://localhost:8080");
 
 $response = $api->post(
     "/api/carrinho/itens",
-    ["produtoId" => $produtoId, "usuarioId" => $usuarioId],
+    [
+        "produtoId" => (int)$produtoId,
+        "usuarioId" => (int)$usuarioId
+    ],
     ["Authorization" => "Bearer $token"]
 );
 
 echo json_encode([
     "status" => $response['status']
 ]);
+?>

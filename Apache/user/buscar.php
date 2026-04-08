@@ -30,7 +30,7 @@ try {
 
 $viewproduto = "http://localhost/user/views/produto.php?id=";
 $produtos = $res['data'] ?? [];
-$va
+
 ?>
 
 <!DOCTYPE html>
@@ -69,27 +69,20 @@ $va
                     $nome = $p['nome'] ?? 'Produto sem nome';
                     $preco = $p['preco'] ?? 0;
 
-                    $imagem = !empty($p['imagens'][0]['endereco'])
-                        ? "http://localhost:8080" . $p['imagens'][0]['endereco']
+                    $imagem = !empty($p['imagens'][0])
+                        ? "http://localhost:8080" . $p['imagens'][0]
                         : "../imagens/default.png";
 
                     $produto_endereco = $viewproduto . ($p['id'] ?? '');
                     ?>
 
-                    <a href="<?= htmlspecialchars($produto_endereco) ?>" class="produto-link">
-                        <div class="produto">
-
-                            <img 
-                                src="<?= htmlspecialchars($imagem) ?>" 
-                                alt="<?= htmlspecialchars($nome) ?>"
-                            >
-
+                    <div class="produto">
+                        <a href="<?= htmlspecialchars($produto_endereco) ?>">
+                            <img src="<?= htmlspecialchars($imagem) ?>" alt="<?= htmlspecialchars($nome) ?>" />
                             <h3><?= htmlspecialchars($nome) ?></h3>
-
                             <p>R$ <?= number_format($preco, 2, ",", ".") ?></p>
-
-                        </div>
-                    </a>
+                        </a>
+                    </div>
 
                 <?php endforeach; ?>
 

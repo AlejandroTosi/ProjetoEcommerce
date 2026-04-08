@@ -58,7 +58,8 @@ import java.util.UUID;
     private ImagemViewers toViewer(Imagem imagem) {
         return new ImagemViewers(
                 imagem.getEndereco(),
-                imagem.getTipo().name() // transforma enum em String
+                imagem.getTipo().name()
+
         );
     }
 

@@ -53,9 +53,9 @@ class ApiClient
         ];
     }
 
-    public function get(string $endpoint, $params = [])
+    public function get(string $endpoint, $params = [], array $extraHeaders = [])
     {
-        return $this->request("GET", $endpoint, $params);
+        return $this->request("GET", $endpoint, $params, $extraHeaders);
     }
 
     public function post(string $endpoint, $data = [], array $extraHeaders = [])

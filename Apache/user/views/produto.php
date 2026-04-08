@@ -78,7 +78,7 @@ $p = $res['data'] ?? null; /*p = produto*/
 
         document.getElementById('btn-carrinho').addEventListener('click', async function() {
 
-            const produtoId = this.dataset.id;
+            const produtoId = Number(this.dataset.id);
             const token = getCookie("jwt");
             try {
                 const response = await fetch('/user/includes/adicionar_carrinho.php', {

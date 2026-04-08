@@ -1,24 +1,17 @@
 package com.alejandro.ecommerce.carrinho;
 
 public class CarrinhoDTO {
-    public record AdicionarProdutoRequest(
+
+    public record PegarCarrinhoResponse(
+            Long id, Long produtoId,
+            String nomeProduto,
+            Double precoProduto,
+            String imagemProduto,
+            Integer quantidade
+            ){}
+    public record AdicionarCarrinhoRequest(
             Long produtoId,
             Long usuarioId
-    ) {}
+    ){}
 
-    public record CarrinhoResponse(
-            Long id,
-            Long usuarioId,
-            Double valorTotal
-    ) {}
-
-    public record RemoverProdutoRequest(
-            Long produtoId,
-            Long usuarioId
-    ) {}
-
-    public record CheckoutResponse(
-            Long pedidoId,
-            Double valorTotal
-    ) {}
 }

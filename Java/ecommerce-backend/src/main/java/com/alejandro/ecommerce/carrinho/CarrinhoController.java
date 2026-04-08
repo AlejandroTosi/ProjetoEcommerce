@@ -22,16 +22,17 @@ public class CarrinhoController {
 
     // pegar carrinho do usuário
     @GetMapping
-    public List<Carrinho> listar() {
+    public List<CarrinhoDTO.PegarCarrinhoResponse> listar() {
         Long usuarioId = usuarioLogadoService.getId();
         return carrinhoService.listarPorUsuario(usuarioId);
     }
 
     // adicionar item
     @PostMapping("/itens")
-    public Carrinho adicionar(@RequestBody Carrinho req) {
+    public CarrinhoDTO.PegarCarrinhoResponse adicionar(@RequestBody CarrinhoDTO.AdicionarCarrinhoRequest req) {
+        System.out.print(req);
         Long usuarioId = usuarioLogadoService.getId();
-        return carrinhoService.adicionar(req, usuarioId);
+        return carrinhoService.adicionar(req.produtoId(), usuarioId);
     }
 
     // remover item
@@ -42,10 +43,3 @@ public class CarrinhoController {
         return ResponseEntity.noContent().build();
     }
 
-    // checkout
-    @PostMapping("/checkout")
-    public Pedido checkout() {
-        Long usuarioId = usuarioLogadoService.getId();
-        return carrinhoService.checkout(usuarioId);
-    }
-}
