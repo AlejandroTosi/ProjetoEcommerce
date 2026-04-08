@@ -42,4 +42,5 @@ public class CarrinhoController {
         carrinhoService.remover(id, usuarioId);
         return ResponseEntity.noContent().build();
     }
+}
 

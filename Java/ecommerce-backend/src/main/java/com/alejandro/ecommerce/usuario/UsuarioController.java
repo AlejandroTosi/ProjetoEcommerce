@@ -20,6 +20,11 @@ public class UsuarioController {
 
         return service.logar(request);
     }
+    @PostMapping("/loginadmin")
+    public UsuarioDTO.LoginResponse loginAdmin(
+            @RequestBody UsuarioDTO.LoginRequest request) {
+        return service.logaradmin(request);
+    }
 
     // PERFIL
     @GetMapping("/perfil")

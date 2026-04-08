@@ -4,6 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['user'])) {
-    header("Location: /user/login/login.php");
-    exit();
-}
+     header("Location: /admin/login/login.php");
+   }
+?>

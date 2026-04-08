@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/auth.php';
+require_once 'auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
@@ -9,5 +9,5 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 session_unset();
 session_destroy();
 
-header('Location: index.php');
+header('Location: ../index.php');
 exit;

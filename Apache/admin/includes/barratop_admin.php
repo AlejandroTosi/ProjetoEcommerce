@@ -1,6 +1,6 @@
 <div class="barra-de-menu admin">
     <a href="/admin/index.php" class="logo-admin">📦 PAINEL ADM</a>
-    
+
     <nav class="nav-admin">
         <a href="/admin/estoque.php" class="sub_menu">Estoque</a>
         <a href="/admin/fornecedores.php" class="sub_menu">Fornecedores</a>
@@ -10,8 +10,16 @@
     </nav>
 
     <div class="usuario-admin">
-        <form action="/admin/includes/logout.php" method="post" style="display:inline;">
-    <button type="submit">Sair</button>
-</form>
+        <?php
+        if (isset($_SESSION['usuario'])) {
+            $usuario = $_SESSION['usuario'];
+            echo "Olá, " . htmlspecialchars($usuario['nome']) . "!";
+        }
+        ?>
+    </div>
+    <div class="sair-admin">
+    <form action="/admin/includes/logout.php" method="post" style="display:inline;">
+                <button type="submit">Sair</button>
+            </form>
     </div>
 </div>

@@ -46,6 +46,30 @@ public class UsuarioService {
         );
     }
 
+    public UsuarioDTO.LoginResponse logaradmin(UsuarioDTO.LoginRequest request) {
+
+        Usuario usuario = usuarioRepository
+                .findByUsername(request.username())
+                .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos"));
+
+        if (!passwordEncoder.matches(request.senha(), usuario.getSenhaHash())) {
+            throw new RuntimeException("Usuário ou senha inválidos");
+        }
+
+        if (!usuario.getTipoDeConta().getId().equals(1L)){ // 1 = ADMIN
+            throw new RuntimeException("Acesso negado: usuário não é admin");
+        }
+
+        // Gerar JWT
+        String token = tokenService.gerarToken(usuario);
+
+        return new UsuarioDTO.LoginResponse(
+                token,
+                usuario.getId(),
+                usuario.getNome()
+        );
+    }
+
     // =========================
     // PERFIL
     // =========================
