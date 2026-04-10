@@ -108,7 +108,6 @@ public class Produto {
         this.ativo = ativo;
     }
 
-    // ← ADICIONE ESTES AQUI
     public Estoque getEstoque() {
         return estoque;
     }

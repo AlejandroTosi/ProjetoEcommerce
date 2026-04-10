@@ -1,4 +1,3 @@
-
 <?php
 require_once "includes/auth.php";
 
@@ -14,7 +13,9 @@ $resultado_busca = null;
 
 if (isset($_GET['acao']) && $_GET['acao'] === 'pesquisar') {
 
-    $nome = $_GET['nome'] ?? '';{$params['q'] = $nome;}
+    $nome = $_GET['nome'] ?? ''; {
+        $params['q'] = $nome;
+    }
     $codigo = $_GET['codigo'] ?? '';
 
     if ($nome !== '') $params['nome'] = $nome;
@@ -22,12 +23,12 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'pesquisar') {
 
     $res = $api->get("/api/produtos/buscar", $params);
     $resultado_busca = $res["data"];
-    }
+}
 
 
 /*-- Adicionar produto*/
 
-if(isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
+if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
     $nome = $_POST['nome'] ?? '';
     $valor = $_POST['valor'] ?? '';
     $categoria_id = $_POST['categoria_id'] ?? '';
@@ -35,24 +36,24 @@ if(isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
     $fornecedor_id = $_POST['fornecedor_id'] ?? '';
     $ativo = true;
 
-$novo_produto = [
-    'nome' => $nome,
-    'valor' => $valor,
-    'categoria' => ["id" => (int)$categoria_id],
-    'descricao' => ["texto" => $descricao],
-    'fornecedor' => ["id" => (int)$fornecedor_id],
-    'ativo' => true
-];
+    $novo_produto = [
+        'nome' => $nome,
+        'valor' => $valor,
+        'categoria' => ["id" => (int)$categoria_id],
+        'descricao' => ["texto" => $descricao],
+        'fornecedor' => ["id" => (int)$fornecedor_id],
+        'ativo' => true
+    ];
 
     $res = $api->post("/api/produtos", $novo_produto);
-    
+
     if (!empty($res['status']) && $res['status'] === 200) {
-        header("Location: views/produto.php?id=".$res["data"]["id"]);
+        header("Location: views/produto.php?id=" . $res["data"]["id"]);
         echo "Produto adicionado com sucesso!";
         exit;
     } else {
         $mensagemErro = $res['data']['message'] ?? 'Desconhecido';
-            echo "Erro ao adicionar produto: " . $mensagemErro;
+        echo "Erro ao adicionar produto: " . $mensagemErro;
     }
 }
 
@@ -61,68 +62,70 @@ $novo_produto = [
 
 <!DOCTYPE html>
 <html lang="PT-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Painel de Produtos</title>
     <link rel="stylesheet" href="css/css.css">
 </head>
+
 <body>
     <?php include 'includes/barratop_admin.php'; ?>
 
     <main style="padding: 40px; margin-top: 20px;">
-        <div class= "container">
-        <h1>Painel de Produtos</h1>
-        <p>Escolha uma opção no menu abaixo.</p>
+        <div class="container">
+            <h1>Painel de Produtos</h1>
+            <p>Escolha uma opção no menu abaixo.</p>
 
-        <div class="container" id="telaPesquisaProduto">
+            <div class="container" id="telaPesquisaProduto">
 
-        <form action="produtos.php" method="get" class="pesquisa-produtos" id="formPesquisaprodutos">
-                <input type="text" name="nome" placeholder="Buscar por nome">
-                <input type="text" name="codigo" placeholder="Buscar por código">
-                <input type="hidden" name="acao" value="pesquisar">
-                <button type="submit">Pesquisar produto</button>
-            </form>
+                <form action="produtos.php" method="get" class="pesquisa-produtos" id="formPesquisaprodutos">
+                    <input type="text" name="nome" placeholder="Buscar por nome">
+                    <input type="text" name="codigo" placeholder="Buscar por código">
+                    <input type="hidden" name="acao" value="pesquisar">
+                    <button type="submit">Pesquisar produto</button>
+                </form>
 
-        </div>
+            </div>
 
-        <?php if($resultado_busca !== null): ?>
-            <h2>Resultados da Busca</h2>
-            <?php if(empty($resultado_busca)): ?>
-                <p>Nenhum produto encontrado.</p>
-            <?php else: ?>
-                <table class="tabela-resultados">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Categoria</th>
-                            <th>Valor</th>
-                            <th>Fornecedor</th>
-                            <th>Ativo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($resultado_busca as $produto): ?>
-                            <tr onclick="window.location='views/produto.php?id=<?= $produto['id'] ?>'" style="cursor:pointer;">
-                                <td><?= htmlspecialchars($produto['id']) ?></td>
-                                <td><?= htmlspecialchars($produto['nome']) ?></td>
-                                <td><?= htmlspecialchars($produto['categoria']['tipo'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($produto['valor']) ?></td>
-                                <td><?= htmlspecialchars($produto['fornecedor']['razaoSocial'] ?? 'N/A') ?></td>
-                                <td><?= $produto['ativo'] ? 'Sim' : 'Não' ?></td>
+            <?php if ($resultado_busca !== null): ?>
+                <h2>Resultados da Busca</h2>
+                <?php if (empty($resultado_busca)): ?>
+                    <p>Nenhum produto encontrado.</p>
+                <?php else: ?>
+                    <table class="tabela-resultados">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Fornecedor</th>
+
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($resultado_busca as $produto): ?>
+                                <tr onclick="window.location='views/produto.php?id=<?= $produto['id'] ?>'" style="cursor:pointer;">
+                                    <td><?= htmlspecialchars($produto['id']) ?></td>
+                                    <td><?= htmlspecialchars($produto['nome']) ?></td>
+                                    <td><?= htmlspecialchars($produto['categoria']['tipo'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($produto['valor']) ?></td>
+                                    <td><?= htmlspecialchars($produto['fornecedor']['razaoSocial'] ?? 'N/A') ?></td>
+
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
             <?php endif; ?>
-        <?php endif; ?>
         </div>
-        
+
 
         <!-- Adicionar novo produto -->
         <button type="button" id="abrirTelaAdicionarProduto" class="botao">Adicionar novo produto</button>
-        
-        
+
+
         <div class="container_adicionar" id="telaAdicionarProduto" style="display:none;">
             <h2>Adicionar Produto</h2>
             <form action="produtos.php" method="post">
@@ -149,7 +152,7 @@ $novo_produto = [
 
 
             <button type="button" id="fecharTelaAdicionarProduto" class="botao">Fechar</button>
-            
+
 
 
 
@@ -157,10 +160,11 @@ $novo_produto = [
         </div>
 
 
-        
+
     </main>
 
 </body>
 
 <script src="js/produtos.js"></script>
+
 </html>

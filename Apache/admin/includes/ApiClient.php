@@ -9,7 +9,7 @@ class ApiClient
         $this->baseUrl = rtrim($baseUrl, '/');
     }
 
-    private function request(string $method, string $endpoint, $data = null)
+    private function request(string $method, string $endpoint, $data = null, array $extraHeaders = [])
     {
         $url = $this->baseUrl . $endpoint;
 
@@ -21,14 +21,17 @@ class ApiClient
         $ch = curl_init($url);
 
         $headers = ["Content-Type: application/json"];
+        foreach ($extraHeaders as $key => $value) {
+        $headers[] = "$key: $value";
+}
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         // Métodos com body
-        if (in_array($method, ["POST", "PUT", "PATCH"]) && $data !== null) {
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        if (in_array($method, ["POST", "PUT", "PATCH", "DELETE"]) && $data !== null) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
         $response = curl_exec($ch);
@@ -50,16 +53,15 @@ class ApiClient
         ];
     }
 
-    public function get(string $endpoint, $params = [])
+    public function get(string $endpoint, $params = [], array $extraHeaders = [])
     {
-        return $this->request("GET", $endpoint, $params);
+        return $this->request("GET", $endpoint, $params, $extraHeaders);
     }
 
-    public function post(string $endpoint, $data = [])
-    {
-        return $this->request("POST", $endpoint, $data);
-    }
-
+    public function post(string $endpoint, $data = [], array $extraHeaders = [])
+{
+    return $this->request("POST", $endpoint, $data, $extraHeaders);
+}
     public function put(string $endpoint, $data = [])
     {
         return $this->request("PUT", $endpoint, $data);
@@ -67,9 +69,6 @@ class ApiClient
 
     public function delete(string $endpoint, $data = [])
     {
-         if (is_array($data) && !empty($data)) {
-        $endpoint .= '?' . http_build_query($data);
-    }
-        return $this->request("DELETE", $endpoint);
+        return $this->request("DELETE", $endpoint, $data);
     }
 }

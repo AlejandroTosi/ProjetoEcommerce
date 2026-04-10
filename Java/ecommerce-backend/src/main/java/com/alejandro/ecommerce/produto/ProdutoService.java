@@ -4,8 +4,10 @@ import com.alejandro.ecommerce.categoria.Categoria;
 import com.alejandro.ecommerce.categoria.CategoriaRepository;
 import com.alejandro.ecommerce.descricao.Descricao;
 import com.alejandro.ecommerce.descricao.DescricaoRepository;
+import com.alejandro.ecommerce.estoque.EstoqueRepository;
 import com.alejandro.ecommerce.fornecedor.Fornecedor;
 import com.alejandro.ecommerce.fornecedor.FornecedorRepository;
+import com.alejandro.ecommerce.estoque.Estoque;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,17 +20,20 @@ public class ProdutoService {
     private final DescricaoRepository descricaoRepository;
     private final CategoriaRepository categoriaRepository;
     private final FornecedorRepository fornecedorRepository;
+    private final EstoqueRepository estoqueRepository;
 
     public ProdutoService(
             ProdutoRepository repository,
             DescricaoRepository descricaoRepository,
             CategoriaRepository categoriaRepository,
-            FornecedorRepository fornecedorRepository) {
+            FornecedorRepository fornecedorRepository,
+            EstoqueRepository estoqueRepository){
 
         this.repository = repository;
         this.descricaoRepository = descricaoRepository;
         this.categoriaRepository = categoriaRepository;
         this.fornecedorRepository = fornecedorRepository;
+        this.estoqueRepository = estoqueRepository;
     }
 
     // LISTAR TODOS
@@ -147,6 +152,9 @@ public class ProdutoService {
         String categoria = produto.getCategoria() != null
                 ? produto.getCategoria().getTipo()
                 : null;
+        Integer estoque = produto.getEstoque() != null
+                ? produto.getEstoque().getQuantidade()
+                : null;
 
         return new ProdutoViewer(
                 produto.getId(),
@@ -154,7 +162,9 @@ public class ProdutoService {
                 produto.getValor(),
                 descricao,
                 imagens,
-                categoria
+                categoria,
+                estoque
+
         );
     }
 

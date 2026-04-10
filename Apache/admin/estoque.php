@@ -2,6 +2,17 @@
 require_once "includes/auth.php";
 
 // =============================
+// Carrega Json com dados estaticos
+// =============================
+
+$json = file_get_contents(__DIR__ . '/data/filtros.json');
+$dados = json_decode($json, true);
+
+$categorias = $dados['categorias'];
+$fornecedores = $dados['fornecedores'];
+
+
+// =============================
 // Captura filtros
 // =============================
 $categoriaId  = $_GET['categoria']  ?? '';
@@ -59,90 +70,95 @@ if (!empty($params)) {
         die("Erro ao decodificar JSON.");
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Pesquisa de Estoque</title>
     <link rel="stylesheet" href="css/css.css">
 </head>
+
 <body>
 
-<?php include 'includes/barratop_admin.php'; ?>
+    <?php include 'includes/barratop_admin.php'; ?>
 
 
-<h2>Pesquisa de Estoque</h2>
+    <h2>Pesquisa de Estoque</h2>
 
-<form method="get" class="pesquisa">
-    <select name="categoria">
-        <option value="">Todas categorias</option>
-        <option value="1">Categoria 1</option>
-        <option value="2">Categoria 2</option>
-    </select>
-
-    <select name="fornecedor">
-        <option value="">Todos fornecedores</option>
-        <option value="1">Fornecedor 1</option>
-        <option value="2">Fornecedor 2</option>
-    </select>
-
-    <select name="ativo">
-        <option value="">Todos</option>
-        <option value="true">Ativos</option>
-        <option value="false">Inativos</option>
-    </select>
-
-    <input type="text" name="q" placeholder="Buscar por nome, descrição...">
-
-    <button type="submit">Pesquisar</button>
-</form>
-
-<div class="resultados-busca">
-
-<?php if ($produtos === null): ?>
-
-    <p>Use os filtros acima e clique em Pesquisar.</p>
-
-<?php elseif (empty($produtos)): ?>
-
-    <p>Nenhum produto encontrado.</p>
-
-<?php else: ?>
-
-     <table class="tabela-produtos">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Fornecedor</th>
-                <th>Valor</th>
-                <th>Estoque</th>
-             </tr>
-        </thead>
-
-<tbody>
-           <?php foreach ($produtos as $p): ?>
-                <tr>
-                    <td><?= htmlspecialchars($p['nome']) ?></td>
-                    <td><?= htmlspecialchars($p['categoria']['tipo']) ?></td>
-                    <td><?= htmlspecialchars($p['fornecedor']['razaoSocial']) ?></td>
-                    <td>R$ <?= number_format($p['valor'], 2, ',', '.') ?></td>
-                    <td><?php 
-                    if (isset($p['estoque']) && isset($p['estoque']['quantidade'])) {
-                        echo htmlspecialchars($p['estoque']['quantidade']);
-                    } else {
-                        echo 'N/A';
-                    }
-                    ?></td>
-                </tr>
+    <form method="get" class="pesquisa">
+        <select name="categoria">
+            <option value="">Todas categorias</option>
+            <?php foreach ($categorias as $cat): ?>
+                <option value="<?= $cat['id'] ?>">
+                    <?= $cat['nome'] ?>
+                </option>
             <?php endforeach; ?>
-        </tbody>
-        
-    </table>
-<?php endif; ?>
+        </select>
 
-</div>
+        <select name="fornecedor">
+            <option value="">Todos fornecedores</option>
+            <?php foreach ($fornecedores as $forn): ?>
+                <option value="<?= $forn['id'] ?>">
+                    <?= $forn['nome'] ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <select name="ativo">
+            <option value="">Todos</option>
+            <option value="true">Ativos</option>
+            <option value="false">Inativos</option>
+        </select>
+
+        <input type="text" name="q" placeholder="Buscar por nome, descrição...">
+
+        <button type="submit">Pesquisar</button>
+    </form>
+
+    <div class="resultados-busca">
+
+        <?php if ($produtos === null): ?>
+
+            <p>Use os filtros acima e clique em Pesquisar.</p>
+
+        <?php elseif (empty($produtos)): ?>
+
+            <p>Nenhum produto encontrado.</p>
+
+        <?php else: ?>
+
+            <table class="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php foreach ($produtos as $p): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($p['id']) ?></td>
+                            <td><?= htmlspecialchars($p['nome']) ?></td>
+                            <td><?= htmlspecialchars($p['descricao'] ?? 'N/A') ?></td>
+                            <td><?= htmlspecialchars($p['categoria'] ?? 'N/A') ?></td>
+                            <td>R$ <?= number_format($p['valor'], 2, ',', '.') ?></td>
+                            <td><?= htmlspecialchars($p['quantidade'] ?? 'Não encontrado') ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+
+            </table>
+        <?php endif; ?>
+
+    </div>
 
 </body>
+
 </html>

@@ -9,6 +9,6 @@ public record ProdutoViewer(
         BigDecimal valor,
         String descricao,
         List<String> imagens,
-        String categoria
-
+        String categoria,
+        Integer quantidade
 ){}

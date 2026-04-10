@@ -17,8 +17,8 @@ require_once "includes/auth.php";
         <p>Escolha uma opção no menu acima para começar.</p>
         
         <div class="estatisticas-rapidas" style="display: flex; gap: 20px;">
-            <div class="card-admin">Produtos Ativos: <strong>150</strong></div>
-            <div class="card-admin">Pedidos Pendentes: <strong>12</strong></div>
+            <div class="card-admin">Lembrete: adicionar grafico aqui.</div>
+
         </div>
     </main>
 </body>
