@@ -2,7 +2,7 @@
 
 include_once "../includes/session.php";
 include_once "../includes/ApiClient.php";
-
+$erroBackend = null;
 $api = new ApiClient();
 try {
     $res = $api->get("/api/usuarios/perfil");

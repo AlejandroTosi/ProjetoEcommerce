@@ -1,6 +1,6 @@
 <?php
-include_once "includes/session.php";
-include_once "includes/ApiClient.php";
+include_once "../includes/session.php";
+include_once "../includes/ApiClient.php";
 
 
 // Try catch que permite renderizar a home mesmo que o backend esteja com problemas
@@ -24,17 +24,17 @@ $produtos = $res['data'] ?? [];
 <head>
     <meta charset="UTF-8">
     <title>Carrinho</title>
-    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" href="../css/css.css">
 </head>
 
 <body>
 
-    <?php include 'includes/barratop.php'; ?>
-    <?php include 'includes/barralateral.php'; ?>
+    <?php include '../includes/barratop.php'; ?>
+    <?php include '../includes/barralateral.php'; ?>
 
     <div class="main-content">
 
-        <?php include 'includes/backend_error.php'; ?>
+        <?php include '../includes/backend_error.php'; ?>
 
         <h2>🛒 Meu Carrinho</h2>
 
@@ -102,7 +102,7 @@ $produtos = $res['data'] ?? [];
 
                     <br>
 
-                    <a href="../checkout.php">
+                    <a href="checkout.php">
                         <button class="botao-comprar" style="width:100%;">
                             Finalizar Compra
                         </button>
@@ -117,7 +117,7 @@ $produtos = $res['data'] ?? [];
     </div>
 
 </body>
-<script src="js/getCookie.js"></script>
+<script src="../js/getCookie.js"></script>
 <script>
     async function removerItem(id) {
         const token = getCookie('jwt');

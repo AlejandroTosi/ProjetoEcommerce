@@ -1,9 +1,13 @@
+<?php
+$jsonPath = dirname(__DIR__, 2) . "/admin/data/filtros.json";
+$json = file_get_contents($jsonPath);
+$categorias = json_decode($json, true);
+?>
+
 <div class="barra-lateral">
     <nav class="nav-lateral">
-        <a href="categoria1.php" class="sub_menu">Eletronicos</a>
-        <a href="categoria2.php" class="sub_menu">Casa e Cozinha</a>
-        <a href="categoria3.php" class="sub_menu">Jogos e Hobbies</a>
-        <a href="categoria4.php" class="sub_menu">Moda</a>
-        <a href="categoria5.php" class="sub_menu">Esportes</a>
+        <?php foreach ($categorias as $categoria): ?>
+            <a href="categoria.php?id=<?= $categoria['id'] ?>" class="sub_menu"><?= $categoria['nome'] ?></a>
+        <?php endforeach; ?>
     </nav>
 </div>

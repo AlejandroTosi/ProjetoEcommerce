@@ -1,5 +1,6 @@
 <div class="barra-de-menu admin-theme">
     <div class="logo-admin">
+        <!-- espaço para logo -->
         <a href="/user/index.php">📦 Loja</a>
     </div>
 
@@ -25,6 +26,6 @@
             <a href="/user/login/login.php">Entrar / Cadastrar</a>
         <?php endif; ?>
 
-        <a href="/user/carrinho.php" class="sub_menu">🛒 Carrinho</a>
+        <a href="/user/carrinho/carrinho.php" class="sub_menu">🛒 Carrinho</a>
     </div>
 </div>

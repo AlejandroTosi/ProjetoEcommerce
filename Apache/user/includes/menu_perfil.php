@@ -12,7 +12,7 @@
 
         <a href="seguranca.php" class="sub_menu">Segurança</a>
 
-        <a href="carrinho.php" class="sub_menu">Carrinho</a>
+        <a href="/user/carrinho/carrinho.php" class="sub_menu">Carrinho</a>
 
     </nav>
 

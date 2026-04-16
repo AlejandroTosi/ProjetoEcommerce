@@ -1,73 +1,85 @@
 <?php
 require_once "../includes/auth.php";
+require_once '../includes/ApiClient.php';
 
 $id = $_GET['id'] ?? null;
-$erroBackend = false;
+$apiUrl = "http://localhost:8080";
+
 if (!$id) {
-    echo "ID do produto não fornecido.";
+    header("Location: /user/index.php"); // Redireciona se não houver ID
     exit;
 }
 
-
-require_once '../includes/ApiClient.php';
-$api = new ApiClient("http://localhost:8080");
+$api = new ApiClient($apiUrl);
 $res = $api->get("/api/produtos/$id");
-if ($res['status'] !== 200) {
-    echo "Erro ao buscar produto: " . ($res['data']['message'] ?? 'Desconecido');
-    exit;
+
+// Verifica se o backend retornou erro ou se o produto não existe
+if ($res['status'] !== 200 || empty($res['data'])) {
+    $produtoNaoEncontrado = true;
+    $p = null;
+} else {
+    $p = $res['data'];
+    $produtoNaoEncontrado = false;
 }
-$p = $res['data'] ?? null; /*p = produto*/
-
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
-    <title><?= htmlspecialchars($p['nome'] ?? 'Produto sem nome') ?></title>
+    <title><?= htmlspecialchars($p['nome'] ?? 'Produto não encontrado') ?></title>
     <link rel="stylesheet" href="../css/css.css">
-
 </head>
 
 <body>
     <?php include '../includes/barratop.php'; ?>
     <?php include '../includes/barralateral.php'; ?>
 
-
     <main class="main-content">
-        <?php if ($erroBackend): ?>
+        <?php if ($produtoNaoEncontrado): ?>
+            <div class="error-msg">
+                <h2>Ops! Produto não encontrado.</h2>
+                <p>O produto que você procura não existe ou foi removido.</p>
+                <a href="index.php">Voltar para a loja</a>
+            </div>
+        <?php else: ?>
+            <div class="produto-container">
+                <div class="produto-imagem">
+                    <?php if (!empty($p['imagens'])): ?>
+                        <img id="imagem-principal"
+                            src="<?= htmlspecialchars($apiUrl . $p['imagens'][0]) ?>"
+                            alt="<?= htmlspecialchars($p['nome']) ?>">
 
-            <?php include '../user/includes/backend_error.php'; ?>
+                        <div class="miniaturas">
+                            <?php foreach ($p['imagens'] as $img): ?>
+                                <img src="<?= htmlspecialchars($apiUrl . $img) ?>"
+                                    onclick="trocarImagem(this.src)"
+                                    alt="Miniatura"
+                                    style="cursor:pointer;">
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="sem-imagem">Imagem não disponível</div>
+                    <?php endif; ?>
+                </div>
 
+                <div class="produto-info">
+                    <h1><?= htmlspecialchars($p['nome']) ?></h1>
+                    <p class="preco">R$ <?= number_format($p['valor'] ?? 0, 2, ",", ".") ?></p>
+
+                    <button class="botao-comprar"
+                        data-id="<?= (int)$p['id'] ?>"
+                        id="btn-carrinho">
+                        Adicionar ao carrinho 🛒
+                    </button>
+                </div>
+            </div>
+
+            <div class="produto-descricao">
+                <h2>Descrição</h2>
+                <p><?= nl2br(htmlspecialchars($p['descricao'] ?? 'Sem descrição disponível.')) ?></p>
+            </div>
         <?php endif; ?>
-        <div class="produto-container">
-            <div class="produto-imagem">
-                <?php if (!empty($p['imagens'])): ?>
-                    <img id="imagem-principal" src="http://localhost:8080<?= $p['imagens'][0] ?>" alt="<?= htmlspecialchars($p['nome']) ?>">
-                    <div class="miniaturas">
-                        <?php foreach ($p['imagens'] as $img): ?>
-                            <img src="http://localhost:8080<?= $img ?>" onclick="trocarImagem(this.src)" alt="Miniatura">
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <div class="sem-imagem">Imagem não disponível</div>
-                <?php endif; ?>
-            </div>
-            <div class="produto-info">
-                <h1><?= htmlspecialchars($p['nome']) ?></h1>
-                <p class="preco">R$ <?= number_format($p['valor'] ?? 0, 2, ",", ".") ?></p>
-                <button
-                    class="botao-comprar"
-                    data-id="<?= $p['id'] ?>"
-                    id="btn-carrinho">
-                    Adicionar ao carrinho 🛒
-                </button>
-            </div>
-        </div>
-        <div class="produto-descricao">
-            <h2>Descrição</h2>
-            <p><?= nl2br(htmlspecialchars($p['descricao'] ?? 'Sem descrição disponível.')) ?></p>
     </main>
 
     <script src="../js/getCookie.js"></script>
@@ -76,10 +88,14 @@ $p = $res['data'] ?? null; /*p = produto*/
             document.getElementById('imagem-principal').src = src;
         }
 
-        document.getElementById('btn-carrinho').addEventListener('click', async function() {
-
-            const produtoId = Number(this.dataset.id);
+        document.getElementById('btn-carrinho')?.addEventListener('click', async function() {
+            const btn = this;
+            const produtoId = Number(btn.dataset.id);
             const token = getCookie("jwt");
+
+            btn.disabled = true;
+            btn.innerText = "Adicionando...";
+
             try {
                 const response = await fetch('/user/includes/adicionar_carrinho.php', {
                     method: 'POST',
@@ -96,14 +112,17 @@ $p = $res['data'] ?? null; /*p = produto*/
                 const data = await response.json();
 
                 if (data.status === 200) {
-                    alert("Produto adicionado ao carrinho 🛒");
+                    alert("Produto adicionado ao carrinho! 🛒");
                 } else {
-                    alert("Erro ao adicionar produto.");
+                    alert("Erro: " + (data.message || "Não foi possível adicionar."));
                 }
-
             } catch (error) {
-                console.error(error);
-                alert("Erro de conexão.");
+                console.error("Erro na requisição:", error);
+                alert("Erro de conexão com o servidor.");
+            } finally {
+
+                btn.disabled = false;
+                btn.innerText = "Adicionar ao carrinho 🛒";
             }
         });
     </script>

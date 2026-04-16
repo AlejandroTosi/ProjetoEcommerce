@@ -10,14 +10,14 @@ $usuario = $res['data'] ?? [];
 $nome = $usuario['nome'] ?? "";
 $email = $usuario['email'] ?? "";
 
-if($_SERVER["REQUEST_METHOD"] === "POST"){
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $nome = $_POST["nome"] ?? "";
     $email = $_POST["email"] ?? "";
 
-    $api->put("/api/usuarios",[
-        "nome"=>$nome,
-        "email"=>$email
+    $api->put("/api/usuarios", [
+        "nome" => $nome,
+        "email" => $email
     ]);
 
     header("Location: perfil.php");
@@ -27,50 +27,52 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
 <!DOCTYPE html>
 <html lang="PT-BR">
+
 <head>
-<meta charset="UTF-8">
-<title>Editar Perfil</title>
-<link rel="stylesheet" href="../css/css.css">
+    <meta charset="UTF-8">
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="../css/css.css">
 </head>
 
 <body>
 
-<?php include '../includes/barratop.php'; ?>
-<?php include '../includes/barralateral.php'; ?>
+    <?php include '../includes/barratop.php'; ?>
+    <?php include '../includes/barralateral.php'; ?>
 
-<div class="main-content">
+    <div class="main-content">
 
-<div style="display:grid; grid-template-columns:250px 1fr; gap:20px;">
+        <div style="display:grid; grid-template-columns:250px 1fr; gap:20px;">
 
-<?php include "../includes/menu_perfil.php"; ?>
+            <?php include "../includes/menu_perfil.php"; ?>
 
-<div class="produto">
+            <div class="produto">
 
-<h2>Editar Perfil</h2>
+                <h2>Editar Perfil</h2>
 
-<form method="POST">
+                <form method="POST">
 
-<p>
-<label>Nome</label><br>
-<input type="text" name="nome" value="<?= htmlspecialchars($nome) ?>" required>
-</p>
+                    <p>
+                        <label>Nome</label><br>
+                        <input type="text" name="nome" value="<?= htmlspecialchars($nome) ?>" required>
+                    </p>
 
-<p>
-<label>Email</label><br>
-<input type="email" name="email" value="<?= htmlspecialchars($email) ?>" required>
-</p>
+                    <p>
+                        <label>Email</label><br>
+                        <input type="email" name="email" value="<?= htmlspecialchars($email) ?>" required>
+                    </p>
 
-<br>
+                    <br>
 
-<button type="submit">Salvar</button>
+                    <button type="submit">Salvar</button>
 
-</form>
+                </form>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </body>
+
 </html>
