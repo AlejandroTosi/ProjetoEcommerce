@@ -4,34 +4,36 @@ include_once "../includes/session.php";
 
 <!DOCTYPE html>
 <html lang="PT-BR">
+
 <head>
-<meta charset="UTF-8">
-<title>Segurança</title>
-<link rel="stylesheet" href="../css/css.css">
+    <meta charset="UTF-8">
+    <title>Segurança</title>
+    <link rel="stylesheet" href="../css/css.css">
 </head>
 
 <body>
 
-<?php include '../includes/barratop.php'; ?>
-<?php include '../includes/barralateral.php'; ?>
+    <?php include '../includes/barratop.php'; ?>
+    <?php include '../includes/barralateral.php'; ?>
 
-<div class="main-content">
+    <div class="main-content">
 
-<div style="display:grid; grid-template-columns:250px 1fr; gap:20px;">
+        <div style="display:grid; grid-template-columns:250px 1fr; gap:20px;">
 
-<?php include "../includes/menu_perfil.php"; ?>
+            <?php include "../includes/menu_perfil.php"; ?>
 
-<div class="produto">
+            <div class="produto">
 
-<h2>Segurança</h2>
+                <h2>Segurança</h2>
 
-<p>Alteração de senha será implementada aqui.</p>
+                <p>Alteração de senha será implementada aqui.</p>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </body>
+
 </html>
