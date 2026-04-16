@@ -1,101 +1,87 @@
 <?php
 require_once "includes/auth.php";
+require_once "includes/ApiClient.php";
 
-
+$api = new ApiClient();
 
 $acao = $_REQUEST['acao'] ?? null;
 $msg = "";
-$resposta = "";
 $resultado_busca = null;
 
 
-if($acao === "pesquisar"){
-    if($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if(empty($_GET['nome'])) {
-            $msg = "Campo de busca vazio.";
-        } else {
-            $nome = $_GET['nome'];
-            $url = "http://localhost:8080/api/fornecedor/buscar?nome=" . urlencode($nome);
+if ($acao === "pesquisar") {
 
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        $msg = "Método inválido.";
+    } elseif (empty($_GET['nome'])) {
+        $msg = "Campo de busca vazio.";
+    } else {
 
-            $resposta = curl_exec($ch);
-            curl_close($ch);
-            $resultado_busca = json_decode($resposta, true);
+        $resultado_busca = $api->get(
+            "/api/fornecedor/buscar",
+            ["nome" => $_GET['nome']]
+        );
+    }
+} elseif ($acao === "adicionar") {
 
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $msg = "Método inválido.";
+    } elseif (
+        empty($_POST['razao_social']) ||
+        empty($_POST['contato']) ||
+        empty($_POST['email']) ||
+        empty($_POST['cnpj'])
+    ) {
+        $msg = "Preencher todos os campos.";
+    } else {
 
-
-}
-
-}
-
-}elseif($acao === "adicionar"){
-    if($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if(empty($_POST['razao_social']) || empty($_POST['contato']) || empty($_POST['email']) || empty($_POST['cnpj'])) {
-            $msg = "Preencher os campos corretamente.";
-        } else {
-            $dados = json_encode([
+        $resultado_busca = $api->post(
+            "/api/fornecedor/adicionar",
+            [
                 "razaoSocial" => $_POST['razao_social'],
                 "numeroContato" => $_POST['contato'],
                 "emailContato" => $_POST['email'],
                 "cnpj" => $_POST['cnpj']
-            ]);
-
-            $ch = curl_init("http://localhost:8080/api/fornecedor/adicionar");
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $dados);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $resposta = curl_exec($ch);
-            curl_close($ch);
-            $resultado_busca = json_decode($resposta, true);
-
-
-
-        }
+            ]
+        );
     }
+} elseif ($acao === "alterar") {
 
-} elseif($acao === "alterar"){
-    if($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if(empty($_POST['id']) || empty($_POST['razao_social']) || empty($_POST['contato']) || empty($_POST['email'])) {
-            $msg = "Preencher os campos corretamente.";
-        } else {
-            $id = $_POST['id'];
-            $dados = json_encode([
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $msg = "Método inválido.";
+    } elseif (
+        empty($_POST['id']) ||
+        empty($_POST['razao_social']) ||
+        empty($_POST['contato']) ||
+        empty($_POST['email']) ||
+        empty($_POST['cnpj'])
+    ) {
+        $msg = "Preencher todos os campos.";
+    } else {
+
+        $resultado_busca = $api->put(
+            "/api/fornecedor/" . $_POST['id'],
+            [
                 "razaoSocial" => $_POST['razao_social'],
                 "numeroContato" => $_POST['contato'],
                 "emailContato" => $_POST['email'],
                 "cnpj" => $_POST['cnpj']
-            ]);
-
-            $ch = curl_init("http://localhost:8080/api/fornecedor/" . $id);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $dados);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $resposta = curl_exec($ch);
-            curl_close($ch);
-            $resultado_busca = json_decode($resposta, true);
-
-
-
-}
-        }
+            ]
+        );
     }
-
+}
 
 ?>
 
 <!DOCTYPE html>
 <html lang="PT-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Painel Fornecedores</title>
     <link rel="stylesheet" href="css/css.css">
 </head>
+
 <body>
     <?php include 'includes/barratop_admin.php'; ?>
 
@@ -137,9 +123,10 @@ if($acao === "pesquisar"){
             </form>
         </div>
 
-        <?php if($resultado_busca !== null): ?>
+        <?php if ($resultado_busca !== null): ?>
             <h2>Resultados da Busca</h2>
-            <?php if(empty($resultado_busca)): ?>
+
+            <?php if (empty($resultado_busca['data'])): ?>
                 <p>Nenhum fornecedor encontrado.</p>
             <?php else: ?>
                 <table class="tabela-fornecedores">
@@ -152,14 +139,15 @@ if($acao === "pesquisar"){
                             <th>CNPJ</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        <?php foreach($resultado_busca as $fornecedor): ?>
+                        <?php foreach ($resultado_busca['data'] as $fornecedor): ?>
                             <tr>
-                                <td><?= $fornecedor['id'] ?></td>
-                                <td><?= $fornecedor['razaoSocial'] ?></td>
-                                <td><?= $fornecedor['numeroContato'] ?></td>
-                                <td><?= $fornecedor['emailContato'] ?></td>
-                                <td><?= $fornecedor['cnpj'] ?></td>
+                                <td><?= $fornecedor['id'] ?? '' ?></td>
+                                <td><?= $fornecedor['razaoSocial'] ?? '' ?></td>
+                                <td><?= $fornecedor['numeroContato'] ?? '' ?></td>
+                                <td><?= $fornecedor['emailContato'] ?? '' ?></td>
+                                <td><?= $fornecedor['cnpj'] ?? '' ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -172,4 +160,5 @@ if($acao === "pesquisar"){
 </body>
 
 <script src="js/fornecedores.js"></script>
+
 </html>

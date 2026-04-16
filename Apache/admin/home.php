@@ -6,7 +6,7 @@ include_once "../user/includes/ApiClient.php";
 $api = new ApiClient();
 $res = $api->get("/api/home");
 
-// Já é array de produtos
+
 $produtos = $res['data'] ?? [];
 
 // Ordena por posição, evita warnings se faltar a chave 'posicao'

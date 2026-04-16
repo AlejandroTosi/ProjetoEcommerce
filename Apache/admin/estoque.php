@@ -12,17 +12,11 @@ $categorias = $dados['categorias'];
 $fornecedores = $dados['fornecedores'];
 
 
-// =============================
-// Captura filtros
-// =============================
 $categoriaId  = $_GET['categoria']  ?? '';
 $fornecedorId = $_GET['fornecedor'] ?? '';
 $ativo        = $_GET['ativo']      ?? '';
 $busca        = $_GET['q']          ?? '';
 
-// =============================
-// Monta params para API
-// =============================
 $params = [];
 
 if ($categoriaId !== '') {

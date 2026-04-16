@@ -2,6 +2,7 @@
 
 class ApiClient
 {
+    
     private string $baseUrl;
 
     public function __construct(string $baseUrl = "http://localhost:8080")
