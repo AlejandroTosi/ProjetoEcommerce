@@ -1,7 +1,10 @@
 package com.alejandro.ecommerce.usuario;
 
 
+import com.alejandro.ecommerce.usuario.DTO.UsuarioDTO;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -46,5 +49,13 @@ public class UsuarioController {
             @RequestBody UsuarioDTO.UpdateRequest request) {
 
         return service.alterar(request);
+    }
+
+    // PESQUISAR USUÁRIO
+    @GetMapping("/pesquisar")
+    public List<UsuarioDTO.Dados> pesquisar(
+            @RequestParam (required = false) String nome,
+            @RequestParam (required = false) String tipoDeConta) {
+        return service.pesquisar(nome, tipoDeConta);
     }
 }

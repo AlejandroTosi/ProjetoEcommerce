@@ -30,4 +30,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
             @Param("q") String q,
             @Param("tipodeconta") Long tipoDeContaId
     );
-}
+
+    @Query("""
+        SELECT u FROM Usuario u
+        JOIN u.tipoDeConta t
+        WHERE 
+        (:nome IS NULL OR :nome = '' OR UPPER(u.nome) LIKE UPPER(CONCAT('%', :nome, '%')))
+        OR
+        (:tipo IS NULL OR :tipo = '' OR UPPER(t.descricao) LIKE UPPER(CONCAT('%', :tipo, '%')))
+        """)
+    List<Usuario> pesquisar(String nome, String tipo);}

@@ -1,13 +1,15 @@
 <?php
 require_once "includes/auth.php";
-
 require_once "includes/ApiClient.php";
-require 'includes/buscar_categorias.php';
-require 'includes/buscar_fornecedores.php';
 $api = new ApiClient();
 $params = [];
 $resultado_busca = null;
 
+$json = file_get_contents(__DIR__ . '/data/filtros.json');
+$dados = json_decode($json, true);
+
+$categorias = $dados['categorias'];
+$fornecedores = $dados['fornecedores'];
 
 /*-- Pesquisar produto*/
 
@@ -57,7 +59,6 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
     }
 }
 
-
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +83,24 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
                 <form action="produtos.php" method="get" class="pesquisa-produtos" id="formPesquisaprodutos">
                     <input type="text" name="nome" placeholder="Buscar por nome">
                     <input type="text" name="codigo" placeholder="Buscar por código">
+                           <select name="categoria_id">
+                            <option value="">Todas categorias</option>
+                            <?php foreach ($categorias as $cat):  ?>
+                                <option value="<?= $cat['id'] ?>">
+                                    <?= $cat['nome'] ?>
+                                </option>
+                            <?php endforeach;?>
+                        </select>
+                            <select name="fornecedor_id">
+                            <option value="">Todos fornecedores</option>
+                            <?php foreach ($fornecedores as $forn): ?>
+                                <option value="<?= $forn['id'] ?>">
+                                    <?= $forn['nome'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+
+                    
                     <input type="hidden" name="acao" value="pesquisar">
                     <button type="submit">Pesquisar produto</button>
                 </form>
@@ -100,7 +119,7 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
                                 <th>Nome</th>
                                 <th>Categoria</th>
                                 <th>Valor</th>
-                                <th>Fornecedor</th>
+                                <th>Quantidade</th>
 
                             </tr>
                         </thead>
@@ -109,9 +128,9 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
                                 <tr onclick="window.location='views/produto.php?id=<?= $produto['id'] ?>'" style="cursor:pointer;">
                                     <td><?= htmlspecialchars($produto['id']) ?></td>
                                     <td><?= htmlspecialchars($produto['nome']) ?></td>
-                                    <td><?= htmlspecialchars($produto['categoria']['tipo'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($produto['categoria'] ?? 'N/A') ?></td>
                                     <td><?= htmlspecialchars($produto['valor']) ?></td>
-                                    <td><?= htmlspecialchars($produto['fornecedor']['razaoSocial'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($produto['quantidade'] ?? 'N/A') ?></td>
 
                                 </tr>
                             <?php endforeach; ?>

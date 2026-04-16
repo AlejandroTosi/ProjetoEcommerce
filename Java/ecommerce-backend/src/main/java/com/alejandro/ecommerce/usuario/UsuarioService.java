@@ -2,6 +2,7 @@ package com.alejandro.ecommerce.usuario;
 
 import com.alejandro.ecommerce.tipodeconta.TipoDeConta;
 import com.alejandro.ecommerce.tipodeconta.TipoDeContaRepository;
+import com.alejandro.ecommerce.usuario.DTO.UsuarioDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -75,8 +76,7 @@ public class UsuarioService {
     // =========================
     public UsuarioDTO.Dados perfil() {
 
-        // depois você pegará o usuário autenticado pelo SecurityContext
-        Usuario usuario = usuarioRepository.findById(1L)
+                Usuario usuario = usuarioRepository.findById(1L)
                 .orElseThrow();
 
         return toDados(usuario);
@@ -93,7 +93,7 @@ public class UsuarioService {
         usuario.setEmail(request.email());
         usuario.setSenhaHash(passwordEncoder.encode(request.senha()));
 
-        // 🔥 BUSCAR TIPO PADRÃO (ex: CLIENTE id = 1)
+
         TipoDeConta tipoPadrao = tipoDeContaRepository
                 .findById(1L)
                 .orElseThrow(() -> new RuntimeException("Tipo de conta não encontrado"));
@@ -110,7 +110,7 @@ public class UsuarioService {
     // =========================
     public UsuarioDTO.Dados alterar(UsuarioDTO.UpdateRequest request) {
 
-        // depois você pega do usuário logado
+
         Usuario usuario = usuarioRepository.findById(1L)
                 .orElseThrow();
 
@@ -120,6 +120,21 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         return toDados(usuario);
+    }
+
+    // =========================
+    // PESQUISAR USUÁRIO
+    // =========================
+    public java.util.List<UsuarioDTO.Dados> pesquisar(String nome, String tipoDeConta) {
+        java.util.List<Usuario> usuarios = usuarioRepository
+                .pesquisar(nome, tipoDeConta);
+
+
+        java.util.List<UsuarioDTO.Dados> resultados = new java.util.ArrayList<>();
+        for (Usuario usuario : usuarios) {
+            resultados.add(toDados(usuario));
+        }
+        return resultados;
     }
 
     // =========================

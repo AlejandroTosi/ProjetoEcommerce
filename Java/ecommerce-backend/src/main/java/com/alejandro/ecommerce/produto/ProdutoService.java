@@ -83,10 +83,10 @@ public class ProdutoService {
 
     // BUSCAR POR ID
     public ProdutoViewer getIdProduto(Long id) {
-                Produto produto= repository.findById(id)
+        Produto produto= repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
-                return toViewer(produto);
+        return toViewer(produto);
     }
 
     // ATUALIZAR
@@ -137,7 +137,7 @@ public class ProdutoService {
 
         return repository.save(produto);
     }
-// MAPPER
+    // MAPPER
     private ProdutoViewer toViewer(Produto produto) {
 
         List<String> imagens = produto.getImagens()

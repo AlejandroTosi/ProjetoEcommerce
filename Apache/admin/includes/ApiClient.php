@@ -11,6 +11,7 @@ class ApiClient
 
     private function request(string $method, string $endpoint, $data = null, array $extraHeaders = [])
     {
+        $token = $_COOKIE['jwt'] ?? '';
         $url = $this->baseUrl . $endpoint;
 
         // GET com query string
@@ -22,12 +23,15 @@ class ApiClient
 
         $headers = ["Content-Type: application/json"];
         foreach ($extraHeaders as $key => $value) {
-        $headers[] = "$key: $value";
-}
+            $headers[] = "$key: $value";
+        }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $token
+]);
 
         // Métodos com body
         if (in_array($method, ["POST", "PUT", "PATCH", "DELETE"]) && $data !== null) {
@@ -59,16 +63,16 @@ class ApiClient
     }
 
     public function post(string $endpoint, $data = [], array $extraHeaders = [])
-{
-    return $this->request("POST", $endpoint, $data, $extraHeaders);
-}
-    public function put(string $endpoint, $data = [])
     {
-        return $this->request("PUT", $endpoint, $data);
+        return $this->request("POST", $endpoint, $data, $extraHeaders);
+    }
+    public function put(string $endpoint, $data = [], array $extraHeaders = [])
+    {
+        return $this->request("PUT", $endpoint, $data, $extraHeaders);
     }
 
-    public function delete(string $endpoint, $data = [])
+    public function delete(string $endpoint, $data = [], array $extraHeaders = [])
     {
-        return $this->request("DELETE", $endpoint, $data);
+        return $this->request("DELETE", $endpoint, $data, $extraHeaders);
     }
 }

@@ -1,4 +1,4 @@
-package com.alejandro.ecommerce.usuario;
+package com.alejandro.ecommerce.usuario.DTO;
 
 public class UsuarioDTO {
 

@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/usuarios/login", "/api/usuarios/registrar", "/api/imagem/**", "/api/home/**", "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/loginadmin").permitAll()
+                        .requestMatchers("/api/usuarios/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/produtos/**").permitAll()
                         .requestMatchers("/api/carrinho/**", "/api/pedidos/**").authenticated()
                         .anyRequest().authenticated()
@@ -51,7 +52,7 @@ public class SecurityConfig {
                 .build();
     }
 
-    // 🔐 NECESSÁRIO para o UsuarioService funcionar
+    // Bean para codificar senhas usando BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

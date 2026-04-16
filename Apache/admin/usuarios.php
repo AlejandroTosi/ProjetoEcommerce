@@ -1,7 +1,7 @@
 <?php
 require_once "includes/auth.php";
 include_once "includes/ApiClient.php";
-
+$resultado_busca = null;
 try {
     $apiClient = new ApiClient("http://localhost:8080/api/usuarios");
 } catch (Exception $e) {
@@ -9,43 +9,51 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $metodo = $_GET['GET'] ?? null;
+    $metodo = $_GET['acao'] ?? null;
+
     if ($metodo === 'pesquisar_nome') {
         $nome = $_GET['nome'] ?? '';
+
         if (trim($nome) === '') {
             $resultado_busca = [];
         } else {
             try {
-                $resultado_busca = $apiClient->get("/buscar?nome=" . urlencode($nome))['data'] ?? [];
-            } catch (Exception $e) {
-                die("Erro ao buscar usuários: " . $e->getMessage());
-            }
-        }
-    } elseif ($metodo === 'pesquisar_funcao') {
-        $funcao = $_GET['funcao'] ?? '';
-        if (trim($funcao) === '') {
-            $resultado_busca = [];
-        } else {
-            try {
-                $resultado_busca = $apiClient->get("/buscar?funcao=" . urlencode($funcao))['data'] ?? [];
+                $res = $apiClient->get("/pesquisar?nome=" . urlencode($nome));
+                $resultado_busca = $res['data'] ?? [];
             } catch (Exception $e) {
                 die("Erro ao buscar usuários: " . $e->getMessage());
             }
         }
     }
-}else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    if ($metodo === 'pesquisar_tipo_de_conta') {
+        $tipo = $_GET['tipoDeConta'] ?? '';
+
+        if (trim($tipo) === '') {
+            $resultado_busca = [];
+        } else {
+            try {
+                $res = $apiClient->get("/pesquisar?tipoDeConta=" . urlencode($tipo));
+                $resultado_busca = $res['data'] ?? [];
+            } catch (Exception $e) {
+                die("Erro ao buscar usuários: " . $e->getMessage());
+            }
+        }
+    }
+} else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? null;
 
     if ($acao === 'adicionar') {
         $novo_usuario = [
             'nome' => $_POST['nome'] ?? '',
+            'username' => $_POST['username'] ?? '',
             'email' => $_POST['email'] ?? '',
             'senha' => $_POST['senha'] ?? '',
-            'funcao' => $_POST['funcao'] ?? ''
+            'tipoDeConta' => $_POST['tipoDeConta'] ?? ''
         ];
 
         try {
-            $res = $apiClient->post("", $novo_usuario);
+            $res = $apiClient->post("/registrar", $novo_usuario);
             if (!empty($res['status']) && $res['status'] === 200) {
                 header("Location: usuarios.php");
                 exit;
@@ -58,12 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($acao === 'alterar') {
         // Implementar lógica de alteração de usuário
     }
-}else if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+} else if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     // Implementar lógica de atualização de usuário
 
-    
+
 }
-    
+
 ?>
 
 <!DOCTYPE html>
@@ -91,45 +99,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 <option value="4">Alterar</option>
             </select>
 
-            <!-- =============================
-             PESQUISAR POR NOME
-        ============================= -->
+            <!-- PESQUISAR POR NOME -->
             <form action="usuarios.php" method="get" class="pesquisa-usuarios" id="formPesquisarUsuarios">
                 <input type="text" name="nome" placeholder="Buscar usuário por nome">
                 <button type="submit">Pesquisar</button>
                 <input type="hidden" name="acao" value="pesquisar_nome">
             </form>
 
-            <!-- =============================
-             PESQUISAR POR FUNÇÃO
-        ============================= -->
-            <form action="usuarios.php" method="get" class="pesquisa-funcao" id="formPesquisarFuncao">
-                <input type="text" name="funcao" placeholder="Buscar por função (ex: ADMIN)">
+            <!-- PESQUISAR POR FUNÇÃO -->
+            <form action="usuarios.php" method="get" class="pesquisa-tipo-de-conta" id="formPesquisarFuncao">
+                <input type="text" name="tipoDeConta" placeholder="Buscar por função (ex: ADMIN)">
                 <button type="submit">Pesquisar</button>
-                <input type="hidden" name="acao" value="pesquisar_funcao">
+                <input type="hidden" name="acao" value="pesquisar_tipo_de_conta">
             </form>
 
-            <!-- =============================
-             ADICIONAR USUÁRIO
-        ============================= -->
+            <!-- ADICIONAR USUÁRIO -->
             <form action="usuarios.php" method="post" class="adicionar-usuarios" id="formAdicionarUsuarios">
                 <input type="text" name="nome" placeholder="Nome do usuário">
+                <input type="text" name="username" placeholder="Username">
                 <input type="text" name="email" placeholder="Email">
                 <input type="password" name="senha" placeholder="Senha">
-                <input type="text" name="funcao" placeholder="Função (ex: ADMIN)">
+                <input type="text" name="tipoDeConta" placeholder="Função (ex: ADMIN)">
                 <button type="submit">Criar Usuário</button>
                 <input type="hidden" name="acao" value="adicionar">
             </form>
 
-            <!-- =============================
-             ALTERAR USUÁRIO
-        ============================= -->
+            <!-- ALTERAR USUÁRIO -->
             <form action="usuarios.php" method="post" class="alterar-usuarios" id="formAlterarUsuarios">
-                <input type="text" name="id" placeholder="ID do usuário">
                 <input type="text" name="nome" placeholder="Novo nome">
+                <input type="text" name="username" placeholder="Novo username">
                 <input type="text" name="email" placeholder="Novo email">
                 <input type="password" name="senha" placeholder="Nova senha">
-                <input type="text" name="funcao" placeholder="Nova função">
+                <input type="text" name="tipoDeConta" placeholder="Nova função">
                 <button type="submit">Alterar Usuário</button>
                 <input type="hidden" name="acao" value="alterar">
             </form>
@@ -144,7 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 <table class="tabela-usuarios">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nome</th>
                             <th>Email</th>
                             <th>Função</th>
@@ -153,10 +153,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     <tbody>
                         <?php foreach ($resultado_busca as $usuario): ?>
                             <tr>
-                                <td><?= $usuario['id'] ?></td>
                                 <td><?= $usuario['nome'] ?></td>
                                 <td><?= $usuario['email'] ?></td>
-                                <td><?= $usuario['funcao'] ?></td>
+                                <td><?= $usuario['tipoDeConta'] ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -165,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         <?php endif; ?>
 
     </main>
-
 </body>
 
 <script src="js/usuarios.js"></script>
