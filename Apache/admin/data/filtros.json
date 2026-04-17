@@ -2,12 +2,11 @@
   "categorias": [
     { "id": 1, "nome": "Tintas acrílicas" },
     { "id": 2, "nome": "Tintas a óleo" },
-    { "id": 3, "nome": "Tintas a óleo" },
-    { "id": 4, "nome": "Pincéis" },
-    { "id": 5, "nome": "Auxiliares" },
-    { "id": 6, "nome": "Combos" },
-    { "id": 7, "nome": "Paletas" },
-    { "id": 8, "nome": "Diversos" }
+    { "id": 3, "nome": "Pincéis" },
+    { "id": 4, "nome": "Auxiliares" },
+    { "id": 5, "nome": "Combos" },
+    { "id": 6, "nome": "Paletas" },
+    { "id": 7, "nome": "Diversos" }
   ],
   "fornecedores": [
     { "id": 1, "nome": "Vallejo" },

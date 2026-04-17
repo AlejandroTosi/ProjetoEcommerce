@@ -49,6 +49,14 @@ body {
     align-items: center;
 }
 
+.barra-lateral a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    padding: 10px;
+}
+
 /* 4. ÁREA DE CONTEÚDO*/
 
 .main-content {
