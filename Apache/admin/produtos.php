@@ -4,15 +4,11 @@ require_once "includes/ApiClient.php";
 $api = new ApiClient();
 $params = [];
 $resultado_busca = null;
-
 $json = file_get_contents(__DIR__ . '/data/filtros.json');
 $dados = json_decode($json, true);
-
 $categorias = $dados['categorias'];
 $fornecedores = $dados['fornecedores'];
-
 /*-- Pesquisar produto*/
-
 if (isset($_GET['acao']) && $_GET['acao'] === 'pesquisar') {
 
     $nome = $_GET['nome'] ?? ''; {
@@ -26,10 +22,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'pesquisar') {
     $res = $api->get("/api/produtos/buscar", $params);
     $resultado_busca = $res["data"];
 }
-
-
 /*-- Adicionar produto*/
-
 if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
     $nome = $_POST['nome'] ?? '';
     $valor = $_POST['valor'] ?? '';
@@ -46,7 +39,6 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
         'fornecedor' => ["id" => (int)$fornecedor_id],
         'ativo' => true
     ];
-
     $res = $api->post("/api/produtos", $novo_produto);
 
     if (!empty($res['status']) && $res['status'] === 200) {
@@ -58,9 +50,7 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
         echo "Erro ao adicionar produto: " . $mensagemErro;
     }
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="PT-BR">
 
@@ -159,11 +149,27 @@ if (isset($_POST['acao']) && $_POST['acao'] === 'adicionar') {
                 <input type="text" id="descricao" name="descricao" required>
 
                 <div>
-                    <?php include "includes/categorias.php"; ?>
+                    <label for="categoria_id">Categoria:</label>
+                    <select name="categoria_id" id="categoria_id" required>
+                        <option value="">Selecione uma categoria</option>
+                        <?php foreach ($categorias as $cat): ?>
+                            <option value="<?= $cat['id'] ?>">
+                                <?= $cat['nome'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div>
-                    <?php include "includes/fornecedores.php"; ?>
+                    <label for="fornecedor_id">Fornecedor:</label>
+                    <select name="fornecedor_id" id="fornecedor_id" required>
+                        <option value="">Selecione um fornecedor</option>
+                        <?php foreach ($fornecedores as $forn): ?>
+                            <option value="<?= $forn['id'] ?>">
+                                 <?= $forn['nome'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <button type="submit">Adicionar Produto</button>

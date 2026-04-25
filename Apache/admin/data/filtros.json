@@ -1,12 +1,14 @@
 {
   "categorias": [
-    { "id": 1, "nome": "Tintas acrílicas" },
-    { "id": 2, "nome": "Tintas a óleo" },
-    { "id": 3, "nome": "Pincéis" },
-    { "id": 4, "nome": "Auxiliares" },
-    { "id": 5, "nome": "Combos" },
-    { "id": 6, "nome": "Paletas" },
-    { "id": 7, "nome": "Diversos" }
+    { "id": 1, "nome": "Periféricos" },
+    { "id": 2, "nome": "Memória Ram" },
+    { "id": 3, "nome": "Discos Rigidos" },
+    { "id": 4, "nome": "Processadores" },
+    { "id": 5, "nome": "Gabinetes" },
+    { "id": 6, "nome": "Coolers" },
+    { "id": 7, "nome": "Auxiliares" },
+    { "id": 8, "nome": "Acessórios" },
+    { "id": 9, "nome": "Placas de Vídeo" }
   ],
   "fornecedores": [
     { "id": 1, "nome": "Vallejo" },

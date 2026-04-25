@@ -14,25 +14,25 @@ public class FornecedorController {
         this.fornecedorService = fornecedorService;
     }
 
-    // criar
+    // Criar
     @PostMapping("/adicionar")
     public Fornecedor cadastrar(@RequestBody Fornecedor fornecedor){
         return fornecedorService.cadastrar(fornecedor);
     }
 
-    // listar
+    // Listar
     @GetMapping
     public List<Fornecedor> listar(){
         return fornecedorService.listarTodos();
     }
 
-    // buscar por nome
+    // Buscar por nome
     @GetMapping("/buscar")
     public List<Fornecedor> buscar(@RequestParam String nome){
         return fornecedorService.buscar(nome);
     }
 
-    // alterar
+    // Alterar
     @PutMapping("/{id}")
     public Fornecedor alterar(@PathVariable Long id,
                               @RequestBody Fornecedor fornecedor){

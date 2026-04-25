@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'adicionar') {
         $idProduto = (int) $_POST['id'];
+        $posicao = (int) $_POST['posicao'];
 
         // Chamar API para adicionar produto
         $api->post("/api/home", ['produtoId' => $idProduto, 'posicao' => $posicao]);

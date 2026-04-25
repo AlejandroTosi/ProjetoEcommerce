@@ -9,7 +9,7 @@ public class StaticResourceConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // mapeia /uploads/** para a pasta física do backend
+        // Mapeia /uploads/** para a pasta física do backend
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:C:/projetos/Java/ecommerce-backend/uploads/");
     }

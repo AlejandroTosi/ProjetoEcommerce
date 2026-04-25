@@ -18,7 +18,7 @@ public class Descricao {
     @Column(nullable = false)
     private String texto;
 
-    // getters e setters
+
     public Long getId() {
         return id;
     }

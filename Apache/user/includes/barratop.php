@@ -2,6 +2,9 @@
 $json = file_get_contents(__DIR__ . '/../../admin/data/filtros.json');
 $dados = json_decode($json, true);
 $categorias = $dados['categorias'];
+$nomeCompleto = $_SESSION['user']['nome'];
+$partes = explode(' ', trim($nomeCompleto));
+$primeiroNome = $partes[0];
 ?>
 
 <div class="barra-de-menu admin-theme">
@@ -23,7 +26,7 @@ $categorias = $dados['categorias'];
 
     <div class="usuario-admin">
         <?php if (isset($_SESSION['user'])): ?>
-            Olá, <?= htmlspecialchars($_SESSION['user']['nome']) ?>
+            Olá, <strong><?= htmlspecialchars($primeiroNome) ?></strong>
             <a href="/user/perfil/perfil.php">Perfil</a>
             <form action="/user/includes/logout.php" method="post" style="display:inline;">
                 <button type="submit">Sair</button>
