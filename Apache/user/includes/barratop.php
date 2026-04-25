@@ -1,3 +1,9 @@
+<?php
+$json = file_get_contents(__DIR__ . '/../../admin/data/filtros.json');
+$dados = json_decode($json, true);
+$categorias = $dados['categorias'];
+?>
+
 <div class="barra-de-menu admin-theme">
     <div class="logo-admin">
         <!-- espaço para logo -->
@@ -7,9 +13,9 @@
     <form class="pesquisa" action="/user/buscar.php" method="get">
         <select name="categoria" class="categoria-pesquisa">
             <option value="">Todos</option>
-            <option value="1">Categoria 1</option>
-            <option value="2">Categoria 2</option>
-            <option value="3">Categoria 3</option>
+            <?php foreach ($categorias as $categoria): ?>
+                <option value="<?= $categoria['id'] ?>"><?= $categoria['nome'] ?></option>
+            <?php endforeach; ?>
         </select>
         <input type="text" name="q" class="campo-pesquisa" placeholder="Pesquisar...">
         <button type="submit" class="botao-pesquisa">Pesquisar</button>
