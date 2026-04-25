@@ -2,10 +2,8 @@
 include_once "includes/session.php";
 include_once "includes/ApiClient.php";
 
-
 $apiUrl = "http://localhost:8080";
 $viewproduto = "http://localhost/user/views/produto.php?id=";
-
 $erroBackend = false;
 try {
     $api = new ApiClient($apiUrl);
@@ -15,9 +13,7 @@ try {
     $res = ['data' => []];
     $erroBackend = true;
 }
-
 $produtos = $res['data'] ?? [];
-
 
 usort($produtos, fn($a, $b) => ($a['posicao'] ?? 0) <=> ($b['posicao'] ?? 0));
 ?>

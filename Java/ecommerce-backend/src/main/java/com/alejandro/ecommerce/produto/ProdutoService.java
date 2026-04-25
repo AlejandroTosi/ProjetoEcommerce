@@ -109,7 +109,7 @@ public class ProdutoService {
             produto.setCategoria(categoria);
         }
 
-        // fornecedor
+        // FORNECEDOR
         if (produtoAtualizado.getFornecedor() != null &&
                 produtoAtualizado.getFornecedor().getId() != null) {
 
@@ -120,7 +120,7 @@ public class ProdutoService {
             produto.setFornecedor(fornecedor);
         }
 
-        // descricao
+        // DESCRICAO
         if (produtoAtualizado.getDescricao() != null) {
 
             Descricao descricao = produto.getDescricao();
