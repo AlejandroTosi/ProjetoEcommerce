@@ -1,22 +1,36 @@
 <?php
 require_once "includes/auth.php";
+require_once "includes/ApiClient.php";
+
+$apiUrl = "http://localhost:8080";
+$api = new ApiClient($apiUrl);
 
 // =============================
-// Carrega Json com dados estaticos
+// Carrega dados estáticos
 // =============================
-
 $json = file_get_contents(__DIR__ . '/data/filtros.json');
 $dados = json_decode($json, true);
 
-$categorias = $dados['categorias'];
-$fornecedores = $dados['fornecedores'];
+$categorias   = $dados['categorias']   ?? [];
+$fornecedores = $dados['fornecedores'] ?? [];
 
+// =============================
+// Entrada de dados
+// =============================
+$acao = $_REQUEST['acao'] ?? null;
 
 $categoriaId  = $_GET['categoria']  ?? '';
 $fornecedorId = $_GET['fornecedor'] ?? '';
 $ativo        = $_GET['ativo']      ?? '';
-$busca        = $_GET['q']          ?? '';
+$busca        = trim($_GET['q'] ?? '');
 
+$erroBackend = false;
+$mensagemErro = null;
+$produtos = null;
+
+// =============================
+// Montagem dinâmica dos filtros
+// =============================
 $params = [];
 
 if ($categoriaId !== '') {
@@ -31,41 +45,76 @@ if ($ativo !== '') {
     $params['ativo'] = $ativo;
 }
 
-if (trim($busca) !== '') {
+if ($busca !== '') {
     $params['q'] = $busca;
 }
 
+$query = $params ? "?" . http_build_query($params) : "";
+
 // =============================
-// Só busca se houver filtro
+// ALTERAR ESTOQUE
 // =============================
-$produtos = null;
+if ($acao === "alterar") {
 
-if (!empty($params)) {
-
-    $url = "http://localhost:8080/api/produtos/buscar";
-    $url .= '?' . http_build_query($params);
-
-    $options = [
-        "http" => [
-            "method" => "GET",
-            "ignore_errors" => true
-        ]
-    ];
-    $context = stream_context_create($options);
-
-    $response = @file_get_contents($url, false, $context);
-
-    if ($response === false) {
-        die("Erro ao conectar com backend.");
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        die("Método inválido.");
     }
 
-    $produtos = json_decode($response, true);
-    if ($produtos === null) {
-        die("Erro ao decodificar JSON.");
+    if (empty($_POST['id']) || empty($_POST['quantidade'])) {
+        die("Preencher todos os campos.");
     }
+
+    try {
+        $alteracao = $api->put(
+            "/api/estoque",
+            [
+                "id" => $_POST['id'],
+                "quantidade" => $_POST['quantidade']
+            ]
+        );
+
+        if (!isset($alteracao['status']) || $alteracao['status'] !== 200) {
+            $erroBackend = true;
+            $mensagemErro = "Erro ao alterar estoque.";
+        }
+
+    } catch (Exception $e) {
+        error_log("Erro ao alterar estoque: " . $e->getMessage());
+        $erroBackend = true;
+        $mensagemErro = "Erro ao conectar com backend.";
+    }
+
 }
 
+// =============================
+// PESQUISAR PRODUTOS
+// =============================
+elseif ($acao === "pesquisar") {
+
+    if (!empty($params)) {
+
+        try {
+            $res = $api->get("/api/produtos/buscar" . $query);
+
+            if (isset($res['status']) && $res['status'] === 200) {
+                $produtos = $res['data'] ?? [];
+            } else {
+                $produtos = [];
+                $erroBackend = true;
+                $mensagemErro = "Erro ao buscar produtos.";
+            }
+
+        } catch (Exception $e) {
+            error_log("Erro ao buscar produtos: " . $e->getMessage());
+            $produtos = [];
+            $erroBackend = true;
+            $mensagemErro = "Erro ao conectar com backend.";
+        }
+    }
+}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -86,7 +135,7 @@ if (!empty($params)) {
         <select name="categoria">
             <option value="">Todas categorias</option>
             <?php foreach ($categorias as $cat): ?>
-                <option value="<?= $cat['id'] ?>">
+                <option value="<?= $cat['id'] ?>" <?= $categoriaId === $cat['id'] ? 'selected' : '' ?>>
                     <?= $cat['nome'] ?>
                 </option>
             <?php endforeach; ?>
@@ -95,7 +144,7 @@ if (!empty($params)) {
         <select name="fornecedor">
             <option value="">Todos fornecedores</option>
             <?php foreach ($fornecedores as $forn): ?>
-                <option value="<?= $forn['id'] ?>">
+                <option value="<?= $forn['id'] ?>" <?= $fornecedorId === $forn['id'] ? 'selected' : '' ?>>
                     <?= $forn['nome'] ?>
                 </option>
             <?php endforeach; ?>
@@ -108,16 +157,14 @@ if (!empty($params)) {
         </select>
 
         <input type="text" name="q" placeholder="Buscar por nome, descrição...">
-
         <button type="submit">Pesquisar</button>
+        <input type="hidden" name="acao" value="pesquisar">
+
     </form>
 
     <div class="resultados-busca">
 
         <?php if ($produtos === null): ?>
-
-            <p>Use os filtros acima e clique em Pesquisar.</p>
-
         <?php elseif (empty($produtos)): ?>
 
             <p>Nenhum produto encontrado.</p>
@@ -132,6 +179,7 @@ if (!empty($params)) {
                         <th>Descrição</th>
                         <th>Categoria</th>
                         <th>Valor</th>
+                        <th>Quantidade</th>
                     </tr>
                 </thead>
 
@@ -152,6 +200,17 @@ if (!empty($params)) {
         <?php endif; ?>
 
     </div>
+
+    <div>
+        <h2> Gerenciamento de Estoque</h2>
+        <form action="estoque.php" method="post">
+            <input type="text" name="id" placeholder="ID do produto">
+            <input type="text" name="quantidade" placeholder="Nova quantidade">
+            <button type="submit">Alterar Estoque</button>
+            <input type="hidden" name="acao" value="alterar">
+        </form>
+    </div>
+    <p>Use os filtros acima e clique em Pesquisar ou Alterar Estoque.</p>
 
 </body>
 

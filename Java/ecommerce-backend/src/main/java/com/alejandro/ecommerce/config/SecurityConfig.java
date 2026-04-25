@@ -44,6 +44,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/usuarios/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/produtos/**").permitAll()
                         .requestMatchers("/api/carrinho/**", "/api/pedidos/**").authenticated()
+                        .requestMatchers("/api/fornecedores/**").authenticated()
+                        .requestMatchers("/api/estoque").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

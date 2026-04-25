@@ -19,7 +19,7 @@ $query = $params ? "?" . http_build_query($params) : "";
 
 try {
     $res = $api->get("/api/produtos/buscar" . $query);
-    
+
     // Verifica se a resposta foi bem-sucedida
     if (isset($res['status']) && $res['status'] === 200) {
         $produtos = $res['data'] ?? [];
@@ -36,11 +36,13 @@ try {
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Resultados da busca - <?= htmlspecialchars($busca ?: 'Todos os produtos') ?></title>
     <link rel="stylesheet" href="../user/css/css.css">
 </head>
+
 <body>
 
     <?php include '../user/includes/barratop.php'; ?>
@@ -63,12 +65,12 @@ try {
                     <a href="index.php" class="btn-voltar">Ver todos os produtos</a>
                 </div>
             <?php else: ?>
-                <?php foreach ($produtos as $p): 
+                <?php foreach ($produtos as $p):
                     $nome = $p['nome'] ?? 'Produto sem nome';
                     $preco = $p['preco'] ?? 0;
-                    $imagem = !empty($p['imagens'][0]) 
-                              ? $apiUrl . $p['imagens'][0] 
-                              : "../imagens/default.png";
+                    $imagem = !empty($p['imagens'][0])
+                        ? $apiUrl . $p['imagens'][0]
+                        : "../imagens/default.png";
                     $link = $viewproduto . ($p['id'] ?? '');
                 ?>
                     <div class="produto">
@@ -83,4 +85,5 @@ try {
         </div>
     </main>
 </body>
+
 </html>

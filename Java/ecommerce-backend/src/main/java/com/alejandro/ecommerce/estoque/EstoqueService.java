@@ -2,8 +2,6 @@ package com.alejandro.ecommerce.estoque;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 
 @Service
 public class EstoqueService {
@@ -14,25 +12,19 @@ public class EstoqueService {
     }
 
 
-    public List<Estoque> findAll() {
-        return repository.findAll();
-    }
-
-    public Estoque findById(Long id){
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Erro ao procurar"));
-
-    }
-
-    public Estoque alterar(Long id, Integer quantidade) {
+    public EstoqueDTO alterar(Long id, Integer quantidade) {
         Estoque estoque = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Erro"));
-
-            estoque.setQuantidade(quantidade);
-        return repository.save(estoque);
+                .orElseThrow(() -> new RuntimeException("Estoque não encontrado"));
 
 
+        Integer novaQuantidade = estoque.getQuantidade() + quantidade;
 
+            estoque.setQuantidade(novaQuantidade);
+        Estoque estoqueAtualizado = repository.save(estoque);
 
+        return new EstoqueDTO(
+                estoqueAtualizado.getId(),
+                estoqueAtualizado.getQuantidade()
+        );
     }
 }

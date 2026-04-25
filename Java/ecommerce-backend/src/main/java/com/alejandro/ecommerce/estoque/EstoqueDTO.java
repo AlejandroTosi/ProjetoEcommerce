@@ -1,4 +1,4 @@
 package com.alejandro.ecommerce.estoque;
 
-public class EstoqueDTO {
-}
+public record EstoqueDTO (Long id, Integer quantidade){}
+record EstoqueUpdateDTO (Long id, Integer quantidade){}
