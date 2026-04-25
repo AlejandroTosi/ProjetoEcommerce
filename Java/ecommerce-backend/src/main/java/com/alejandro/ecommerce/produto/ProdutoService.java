@@ -7,7 +7,6 @@ import com.alejandro.ecommerce.descricao.DescricaoRepository;
 import com.alejandro.ecommerce.estoque.EstoqueRepository;
 import com.alejandro.ecommerce.fornecedor.Fornecedor;
 import com.alejandro.ecommerce.fornecedor.FornecedorRepository;
-import com.alejandro.ecommerce.estoque.Estoque;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -36,30 +35,24 @@ public class ProdutoService {
         this.estoqueRepository = estoqueRepository;
     }
 
-    // LISTAR TODOS
+    // Listar todos
     public List<Produto> findAll() {
         return repository.findAll();
     }
-
-    // BUSCAR VARIOS IDS
+    // Buscar varios ids
     public List<Produto> findAllByIds(List<Long> ids) {
         return repository.findAllById(ids);
     }
-
-    // SALVAR
+    // Salvar
     public Produto salvar(Produto produto) {
-
         Descricao descricao = produto.getDescricao();
-
         if (descricao != null && descricao.getId() == null) {
             descricao = descricaoRepository.save(descricao);
         }
-
         produto.setDescricao(descricao);
         return repository.save(produto);
     }
-
-    // BUSCA COM FILTROS
+    // Busca com filtros
     public List<ProdutoViewer> buscar(
             Long fornecedorId,
             Long categoriaId,
@@ -71,73 +64,57 @@ public class ProdutoService {
         if (q != null && q.isBlank()) {
             q = null;
         }
-
         List<Produto> produtos = repository.buscarComFiltros(
                 fornecedorId, categoriaId, ativo, min, max, q
         );
-
         return produtos.stream()
                 .map(this::toViewer)
                 .toList();
     }
-
-    // BUSCAR POR ID
+    // Buscar por id
     public ProdutoViewer getIdProduto(Long id) {
         Produto produto= repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-
         return toViewer(produto);
     }
-
-    // ATUALIZAR
+    // Atualizar
     public Produto atualizar(Produto produtoAtualizado) {
-
         Produto produto = repository.findById(produtoAtualizado.getId())
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-
         produto.setNome(produtoAtualizado.getNome());
         produto.setValor(produtoAtualizado.getValor());
 
-        // categoria
+        // Categoria
         if (produtoAtualizado.getCategoria() != null &&
                 produtoAtualizado.getCategoria().getId() != null) {
 
             Categoria categoria = categoriaRepository.findById(
                     produtoAtualizado.getCategoria().getId()
             ).orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
-
             produto.setCategoria(categoria);
         }
-
-        // FORNECEDOR
+        // Fornecedor
         if (produtoAtualizado.getFornecedor() != null &&
                 produtoAtualizado.getFornecedor().getId() != null) {
-
             Fornecedor fornecedor = fornecedorRepository.findById(
                     produtoAtualizado.getFornecedor().getId()
             ).orElseThrow(() -> new RuntimeException("Fornecedor não encontrado"));
 
             produto.setFornecedor(fornecedor);
         }
-
-        // DESCRICAO
+        // Descrição
         if (produtoAtualizado.getDescricao() != null) {
-
             Descricao descricao = produto.getDescricao();
-
             if (descricao == null) {
                 descricao = new Descricao();
             }
-
             descricao.setTexto(produtoAtualizado.getDescricao().getTexto());
             descricao = descricaoRepository.save(descricao);
-
             produto.setDescricao(descricao);
         }
-
         return repository.save(produto);
     }
-    // MAPPER
+    // Mapper
     private ProdutoViewer toViewer(Produto produto) {
 
         List<String> imagens = produto.getImagens()
